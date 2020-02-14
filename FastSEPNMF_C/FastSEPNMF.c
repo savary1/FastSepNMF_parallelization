@@ -14,9 +14,8 @@ int main (int argc, char* argv[]){
     int datatype;
     int endmembers;
     int normalize;
-    long int i;
-    int h;
-    float max_val;
+    long int i, *pos_max, b, j, b_pos_size;
+    float max_val, a;
 
     if (argc != 5){
 		printf("******************************************************************\n");
@@ -40,9 +39,12 @@ int main (int argc, char* argv[]){
 
 
     long int image_size = cols*rows;
-    float *image = (float *) calloc (image_size * bands, sizeof(float));  //input image
+    float *image = (float *) calloc (image_size * bands, sizeof(float));    //input image
     float *U = (float *) malloc (bands * endmembers * sizeof(float));       //selected endmembers
-    float *normM = (float *) calloc (image_size, sizeof(float));           //normalized image
+    float *normM = (float *) calloc (image_size, sizeof(float));            //normalized image
+	float *normM1 = (float *) malloc (image_size, sizeof(float));			//copy of normM
+	float *normMAux = (float *) malloc (image_size, sizeof(float));			//aux array to find the positions of (a-normM)/a <= 1e-6
+	float *b_pos = (float *) malloc (image_size, sizeof(float));	        //valid positions of normM that meet (a-normM)/a <= 1e-6
     long int J[endmembers];                                                 //selected endmembers positions in input image
 
     Load_Image(argv[1], image, cols, rows, bands, datatype);
@@ -73,15 +75,33 @@ int main (int argc, char* argv[]){
 
     /**************************** #END# - Normalize image****************************************/
 
-
+	max_val = max_Val(normM, image_size, pos_max);
 
     /**************************** #INIT# - FastSEPNMF algorithm****************************************/
-    max_val = -1;
-    for (i = 0; i < image_size; i++){
-        if(normM[i] > max_val){
-            max_val = normM[i];
-        }
-    }
+	
+	for(i = 0; i < image_size; i++){
+		normM1[i] = normM[i];
+	}
+	i = 0;
+
+	while(i <= endmembers && max_Val(normM, image_size, pos_max)/max_val > 1e-9 ){
+		a = max_Val(normM, image_size, pos_max);
+		for(j = 0; j < image_size; j++){
+			normMAux[j] = (a - normM)/a;
+		}
+		b_pos_size = 0;
+		for(j = 0; j < image_size; j++){
+			if (normMAux[j]<= 1.0e-6){
+				b[b_pos_size] = j;
+				b_pos_size++;
+			}
+		}
+		
+		
+		
+		
+	}
+
     /**************************** #END# - FastSEPNMF algorithm*****************************************/
 
     printf("Maxval: %11.9f \n", max_val);
@@ -96,6 +116,17 @@ int main (int argc, char* argv[]){
     free(normM);
 
     return 0;
+}
+
+int max_Val(float *vector, long int image_size, long int *pos_max){
+	max_val = -1;
+    for (i = 0; i < image_size; i++){
+        if(vector[i] > max_val){
+            max_val = vector[i];
+			pos_max = i;
+        }
+    }
+	return max_val;
 }
 
 

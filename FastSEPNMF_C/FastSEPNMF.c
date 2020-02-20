@@ -95,8 +95,8 @@ int main (int argc, char* argv[]){
 	}
 	i = 0;
 	printf("Holaaaa -1\n");
-	while(i <= endmembers && max_Val(normM, image_size)/max_val > 1e-9 ){
-		printf("Holaaaa 0\n");
+	while(i < endmembers && max_Val(normM, image_size)/max_val > 1e-9 ){
+		printf("Holaaaa 0\n")
 		//[a,b] = max(normM);
 		a = max_Val(normM, image_size);
 		printf("El valor de a es :  %f\n", a);
@@ -105,6 +105,13 @@ int main (int argc, char* argv[]){
 		for(j = 0; j < image_size; j++){
 			normMAux[j] = (a - normM[j])/a;
 		}
+		/////////////////////////// debug
+		printf("Los primeros 10 valores de nomMAux son:");
+		for (j = 0; j < 10; j++){
+			printf("%f\n", normMAux[j]);
+		}
+		///////////////////////  fin debug
+		
 		printf("Holaaaa 2\n");
 		//b = find((a-normM)/a <= 1e-6); 
 		b_pos_size = 0;
@@ -115,7 +122,6 @@ int main (int argc, char* argv[]){
 			}
 		}
 		
-		
 		//////////////////////////////////////    -   For de debug
 		printf("array b\n");
 		
@@ -124,7 +130,7 @@ int main (int argc, char* argv[]){
 		}
 		printf("b_pos_size :  %ld\n", b_pos_size);
 		
-		//////////////////////////////////// - Fin for debug
+		//////////////////////////////////// - Fin for debug	
 		
 		//if length(b) > 1, [c,d] = max(normM1(b)); b = b(d);
 		if (b_pos_size > 1){
@@ -135,15 +141,24 @@ int main (int argc, char* argv[]){
 		else{ // comprobar si siempre tiene valores b_pos
 			J[i] = b_pos[0];
 		}
+		
 		printf("Holaaaa 3\n");
+		
 		//U(:,i) = M(:,b); 
 		for(j = 0 ; j < bands; j++){
 			U[i + endmembers*j] = image[image_size*j + J[i]];
 		}
 		
+		//////////////////////////////////////   debug
+		printf("Los primeros valores de U: \n");
+		for(j = 0; j < 10; j ++){
+			printf("%f\n", U[i + endmembers*j]); 	// son correctos en i = 0
+		}
+		
+		//////////////////////////////////// - Fin debug
+		
 		//U(:,i) = U(:,i) - U(:,j)*(U(:,j)'*U(:,i));
 		for(j = 0; j < i; j++){
-			
 			faux = 0;
 			//(U(:,j)'*U(:,i))
 			for(k = 0; k < bands; k++){
@@ -159,6 +174,14 @@ int main (int argc, char* argv[]){
 			}
 					
 		}
+		
+		//////////////////////////////////////   debug
+		printf("Los primeros valores de U: \n");
+		for(j = 0; j < 10; j ++){
+			printf("%f\n", U[i + endmembers*j]); 	
+		}
+		
+		//////////////////////////////////// - Fin debug
 		printf("Holaaaa 4\n");
 		
 		//U(:,i) = U(:,i)/norm(U(:,i)); 
@@ -168,9 +191,19 @@ int main (int argc, char* argv[]){
 		}
 		faux = sqrtf(faux);
 		
+		printf("el valor de norm(U(:,i)) es: %f\n ", faux);
+		
 		for(j = 0; j < bands; j++){
 			U[i + j*endmembers] = U[i + j*endmembers]/faux;
 		}
+		
+		//////////////////////////////////////   debug
+		printf("Los primeros valores de U: \n");
+		for(j = 0; j < 10; j ++){
+			printf("%f\n", U[i + endmembers*j]); 	
+		}
+		
+		//////////////////////////////////// - Fin debug
 		
 		//v = U(:,i);
 		for(j = 0; j < bands; j++){
@@ -191,27 +224,50 @@ int main (int argc, char* argv[]){
 				v[k] = v[k] - fvAux[k];
 			}
 		}
+		
+		//////////////////////////////////////   debug
+		printf("Los primeros valores de v: \n");
+		for(j = 0; j < 10; j ++){
+			printf("%f\n", v[j]); 	
+		}
+		
+		//////////////////////////////////// - Fin for debug
 		printf("Holaaaa 6\n");
 		//(v'*M).^2
 		for(j = 0; j < image_size; j++){
 			faux = 0;
 			for(k = 0; k < bands; k++){
-				 faux = v[k] * image[j + bands*k];
+				 faux += v[k] * image[j + image_size*k];
 			}
 			fvAux[j] = powf(faux,2);
 		}
+		
+		//////////////////////////////////////   debug
+		printf("Los primeros valores de (v'*M).^2: \n");
+		for(j = 0; j < 10; j ++){
+			printf("%f\n", fvAux[j]); 	
+		}
+		
+		//////////////////////////////////// - Fin for debug
 		
 		for(j = 0; j < image_size; j++){
 			normM[j] -= fvAux[j];
 		}
 		
+		//////////////////////////////////////   debug
+		printf("Los primeros valores de normM: \n");
+		for(j = 0; j < 10; j ++){
+			printf("%f\n", normM[j]); 	
+		}
+		
+		//////////////////////////////////// - Fin for debug
+			
 		i = i + 1;
 		
 	}
 
     /**************************** #END# - FastSEPNMF algorithm*****************************************/
-
-    /*printf("Maxval: %11.9f \n", max_val);
+	/*printf("Maxval: %11.9f \n", max_val);
     printf("First 10 normM:\n");
     for(i = 0; i < 10; i++){
         printf("%9.6f\n", normM[i]);
@@ -222,7 +278,6 @@ int main (int argc, char* argv[]){
         printf("%ld\n", J[i]);
     }
     
-
     free(image);
     free(U);
     free(normM);
@@ -241,12 +296,11 @@ long int max_val_extract_array(float *normMAux, long int *b_pos, long int b_pos_
 	long int i;
     for (i = 0; i < b_pos_size; i++){
         if(normMAux[b_pos[i]] > max_val){
-            max_val = normMAux[i];
+            max_val = normMAux[b_pos[i]];
 			pos = i;
         }
     }
 	return pos;
-	
 }
 
 
@@ -259,6 +313,7 @@ float max_Val(float *vector, long int image_size){
             max_val = vector[i];
         }
     }
+	printf("La pos de max val es: %ld\n", pos);
 	printf("Buenas tardes 1\n");
 	return max_val;
 }

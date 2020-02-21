@@ -21,8 +21,8 @@
 
 void cleanString(char *cadena, char *out);
 void readHeader(char* filename, int *cols, int *rows, int *numBands, int *dataType);
-void Load_Image(char* filename, float *imageVector, int cols, int rows, int numBands, int dataType);
-void writeResult( float *imagen, const char* resultado_filename, int num_samples, int num_lines, int num_bands);
+void Load_Image(char* filename, double *imageVector, int cols, int rows, int numBands, int dataType);
+void writeResult(double *imagen, const char* resultado_filename, int num_samples, int num_lines, int num_bands);
 void writeHeader(const char* outHeader, int samples, int lines, int bands);
 
 #endif /* READWRITE_H_ */

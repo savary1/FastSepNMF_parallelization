@@ -75,7 +75,7 @@ void readHeader(char* filename, int *cols, int *rows, int *numBands, int *dataTy
 
 
 //load the image "filename" and do a cast over the original datatype into float datatype. Thus, it can operate with data inside the image.
-void Load_Image(char* filename, float *imageVector, int cols, int rows, int numBands, int dataType){
+void Load_Image(char* filename, double *imageVector, int cols, int rows, int numBands, int dataType){
 
 	FILE *fp;
 	short int *tipo_short_int;
@@ -99,13 +99,13 @@ void Load_Image(char* filename, float *imageVector, int cols, int rows, int numB
 				case 2:
 					tipo_short_int = (short int *) malloc (lines_samples*numBands * sizeof(short int));
 					fread(tipo_short_int,1,(sizeof(short int)*lines_samples*numBands),fp);
-					//Convert image data datatype to float
+					//Convert image data datatype to double
 					#pragma loop count min(1024)
 					for(i=0; i<numBands; i+=1){
 						bandStart = i * lines_samples;
 						for(j= 0; j < rows; j+=1 ){
 							for(k = 0; k < cols; k+=1){
-								value=(float)tipo_short_int[h];
+								value=(double)tipo_short_int[h];
 								if(value<0){
 									imageVector[bandStart + ((cols * k) % lines_samples) + j]=0.0;
 								}else{
@@ -126,7 +126,7 @@ void Load_Image(char* filename, float *imageVector, int cols, int rows, int numB
 						bandStart = i * lines_samples;
 						for(j= 0; j < rows; j+=1 ){
 							for(k = 0; k < cols; k+=1){
-								value=tipo_float[h];
+								value=(double)tipo_float[h];
 								if(value<0)
 									imageVector[bandStart + ((cols * k) % lines_samples) + j]=0.0;
 								else
@@ -146,7 +146,7 @@ void Load_Image(char* filename, float *imageVector, int cols, int rows, int numB
 						bandStart = i * lines_samples;
 						for(j= 0; j < rows; j+=1 ){
 							for(k = 0; k < cols; k+=1){
-								value=(float)tipo_double[h];
+								value=tipo_double[h];
 								if(value<0)
 									imageVector[bandStart + ((cols * k) % lines_samples) + j]=0.0;                				
 								else
@@ -170,7 +170,7 @@ void Load_Image(char* filename, float *imageVector, int cols, int rows, int numB
   and number of bands "num_bands".
   This method does not write the header file .hdr, only the image file.
 */
-void writeResult( float *imagen, const char* resultado_filename, int num_samples, int num_lines, int num_bands){
+void writeResult( double *imagen, const char* resultado_filename, int num_samples, int num_lines, int num_bands){
     FILE *fp;
     int i, j, np=num_samples*num_lines;
     double* imagent = (double*)malloc(num_bands*np*sizeof(double) ); 

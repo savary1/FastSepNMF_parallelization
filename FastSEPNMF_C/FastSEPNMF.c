@@ -61,11 +61,6 @@ int main (int argc, char* argv[]){
 	}
 
     Load_Image(argv[1], image, cols, rows, bands, datatype);
-    
-   	/* printf("First 10 image:\n");
-    for(i = 0; i < 10; i++){
-        printf("%.15f\n", image[i]);
-    } */
 	/**************************** #END# - Load Image and allocate memory*******************************/
 
 	gettimeofday(&t0,NULL);

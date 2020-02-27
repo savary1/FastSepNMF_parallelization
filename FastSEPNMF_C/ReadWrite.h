@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <stdio.h>
+#include <errno.h>
 //#include <stddef.h>
 #include <sys/time.h>
 #include <ctype.h>

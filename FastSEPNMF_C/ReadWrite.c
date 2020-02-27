@@ -37,7 +37,8 @@ void readHeader(char* filename, int *cols, int *rows, int *numBands, int *dataTy
 	}
 
 	if ((fp=fopen(filename,"r"))==NULL){
-		printf("ERROR %d. No se ha podido abrir el fichero .hdr de la imagen: %s \n", filename);
+		perror("Error opening file");
+		printf("ERROR %d. No se ha podido abrir el fichero .hdr de la imagen: %s \n", fp,filename);
 		system("PAUSE");
 		exit(1);
 	}
@@ -107,9 +108,9 @@ void Load_Image(char* filename, double *imageVector, int cols, int rows, int num
 							for(k = 0; k < cols; k+=1){
 								value=(double)tipo_short_int[h];
 								if(value<0){
-									imageVector[bandStart + ((cols * k) % lines_samples) + j]=0.0;
+									imageVector[bandStart + (rows * k) + j]=0.0;
 								}else{
-									imageVector[bandStart + ((cols * k) % lines_samples) + j]=value;
+									imageVector[bandStart + (rows * k) + j]=value;
 								}
 								h++;
 							}
@@ -126,11 +127,11 @@ void Load_Image(char* filename, double *imageVector, int cols, int rows, int num
 						bandStart = i * lines_samples;
 						for(j= 0; j < rows; j+=1 ){
 							for(k = 0; k < cols; k+=1){
-								value=(double)tipo_float[h];
+								value=tipo_float[h];
 								if(value<0)
-									imageVector[bandStart + ((cols * k) % lines_samples) + j]=0.0;
+									imageVector[bandStart + (rows * k) + j]=0.0;
 								else
-									imageVector[bandStart + ((cols * k) % lines_samples) + j]=value;
+									imageVector[bandStart + (rows * k) + j]=value;
 								h++;
 							}
 						}
@@ -148,9 +149,9 @@ void Load_Image(char* filename, double *imageVector, int cols, int rows, int num
 							for(k = 0; k < cols; k+=1){
 								value=tipo_double[h];
 								if(value<0)
-									imageVector[bandStart + ((cols * k) % lines_samples) + j]=0.0;                				
+									imageVector[bandStart + (rows * k) + j]=0.0;                				
 								else
-									imageVector[bandStart + ((cols * k) % lines_samples) + j]=value;
+									imageVector[bandStart + (rows * k) + j]=value;
 								h++;
 							}
 						}

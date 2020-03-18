@@ -13,11 +13,11 @@ LIBRARIES := -lm
 #GCC_novec
 #OPT := -O1 -fno-tree-vectorize -ffast-math 
 #GCC_autovec
-#OPT := -03 -ftree-vectorizer-verbose=6 -ffast-math
+#OPT := -O3 -ftree-vectorizer-verbose=6 -ffast-math -ftree-parallelize-loops=3
 #ICC_novec
 #OPT := -01 -restrict -no-vec
 #ICC_autovec
-OPT := -03 -restrict -qopt-report
+OPT := -O3 -restrict -qopt-report-phase=vec,loop -qopt-report=3 -qopenmp
 
 CC = icc
 

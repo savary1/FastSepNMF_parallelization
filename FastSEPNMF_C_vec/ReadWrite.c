@@ -82,7 +82,7 @@ void Load_Image(char* filename, double *imageVector, int cols, int rows, int num
 	short int *tipo_short_int;
 	double *tipo_double;
 	float *tipo_float, value;
-	long int i, j, h, k, bandStart;
+	long int i, j, h, k, pixelStart;
 	int lines_samples=rows*cols;
 
 	// open file "filename" only read
@@ -101,16 +101,15 @@ void Load_Image(char* filename, double *imageVector, int cols, int rows, int num
 					tipo_short_int = (short int *) malloc (lines_samples*numBands * sizeof(short int));
 					fread(tipo_short_int,1,(sizeof(short int)*lines_samples*numBands),fp);
 					//Convert image data datatype to double
-					#pragma loop count min(1024)
+					#pragma loop count min(1024)					
 					for(i=0; i<numBands; i+=1){
-						bandStart = i * lines_samples;
 						for(j= 0; j < rows; j+=1 ){
 							for(k = 0; k < cols; k+=1){
 								value=(double)tipo_short_int[h];
 								if(value<0){
-									imageVector[bandStart + (rows * k) + j]=0.0;
+									imageVector[numBands*(h%lines_samples) + i]=0.0;
 								}else{
-									imageVector[bandStart + (rows * k) + j]=value;
+									imageVector[numBands*(h%lines_samples) + i]=value;
 								}
 								h++;
 							}
@@ -124,14 +123,13 @@ void Load_Image(char* filename, double *imageVector, int cols, int rows, int num
 					fread(tipo_float,1,(sizeof(float)*lines_samples*numBands),fp);
 					#pragma loop count min(1024)
 					for(i=0; i<numBands; i+=1){
-						bandStart = i * lines_samples;
 						for(j= 0; j < rows; j+=1 ){
 							for(k = 0; k < cols; k+=1){
 								value=tipo_float[h];
 								if(value<0)
-									imageVector[bandStart + (rows * k) + j]=0.0;
+									imageVector[numBands*(h%lines_samples) + i]=0.0;
 								else
-									imageVector[bandStart + (rows * k) + j]=value;
+									imageVector[numBands*(h%lines_samples) + i]=value;
 								h++;
 							}
 						}
@@ -144,14 +142,13 @@ void Load_Image(char* filename, double *imageVector, int cols, int rows, int num
 					fread(tipo_double,1,(sizeof(double)*lines_samples*numBands),fp);
 					#pragma loop count min(1024)
 					for(i=0; i<numBands; i+=1){
-						bandStart = i * lines_samples;
 						for(j= 0; j < rows; j+=1 ){
 							for(k = 0; k < cols; k+=1){
 								value=tipo_double[h];
 								if(value<0)
-									imageVector[bandStart + (rows * k) + j]=0.0;                				
+									imageVector[numBands*(h%lines_samples) + i]=0.0;                				
 								else
-									imageVector[bandStart + (rows * k) + j]=value;
+									imageVector[numBands*(h%lines_samples) + i]=value;
 								h++;
 							}
 						}

@@ -77,7 +77,7 @@ int main (int argc, char* argv[]){
 	#pragma omp parallel for
 	for(i = 0; i < image_size; i++){
 		for(k = 0; k < bands; k++){
-        	normM[i] += image[i + image_size*k] * image[i + image_size*k]; 
+        	normM[i] += image[i*bands + k] * image[i*bands + k]; 
 		}
     }
 	gettimeofday(&t2,NULL);
@@ -125,7 +125,7 @@ int main (int argc, char* argv[]){
 		
 		//U(:,i) = M(:,b);  //MIRAR SI SE PUEDEN HACER LOS ACCESOS A MEMORIA ADYACENTES
 		for(j = 0 ; j < bands; j++){
-			U[i + endmembers*j] = image[image_size*j + J[i]];
+			U[i*bands + j] = image[J[i] * bands + j];
 		}
 		
 		//U(:,i) = U(:,i) - U(:,j)*(U(:,j)'*U(:,i));
@@ -133,16 +133,16 @@ int main (int argc, char* argv[]){
 			faux = 0;
 			//(U(:,j)'*U(:,i))
 			for(k = 0; k < bands; k++){//MIRAR SI LOS ACCESOS DE PUEDEN HACER ADYACENTES
-				faux += U[j + k*endmembers] * U[i + k*endmembers];
+				faux += U[j*bands + k] * U[i*bands + k];
 			}
 			
 			;//MIRAR SI LOS ACCESOS A MEMORIA SE PUEDEN HACER ADYACENTES
 			for(k = 0; k < bands; k ++){
-				fvAux[k] = U[j + k*endmembers] * faux;
+				fvAux[k] = U[j*bands + k] * faux;
 			}
 			
 			for(k = 0; k < bands; k ++){//ESTE NO LO VECTORIZA Y CREO QUE SI SE PUEDE. INTENTAR HACER ACCESOS A MEMORIA ADYACENTES
-				U[i + k*endmembers] = U[i + k*endmembers] - fvAux[k];
+				U[i*bands + k] = U[i*bands + k] - fvAux[k];
 			}
 					
 		}
@@ -150,16 +150,16 @@ int main (int argc, char* argv[]){
 		//U(:,i) = U(:,i)/norm(U(:,i));
 		faux = 0;
 		for(j = 0; j < bands; j++){//INTENTAR HACER ACCESOS A MEMORIA ADYACENTES
-			faux += U[i + j*endmembers] * U[i + j*endmembers];
+			faux += U[i*bands + j]*U[i*bands + j];
 		}
 		faux = sqrt(faux);
 		for(j = 0; j < bands; j++){	//NO LO VECTORIZA, CREO QUE SI SE PUEDE. INTENTAR HACER ACCESOS A MEMORIA ADYACENTES
-			U[i + j*endmembers] = U[i + j*endmembers]/faux;
+			U[i*bands + j] = U[i*bands + j]/faux;
 		}
 		
 		//v = U(:,i);
 		for(j = 0; j < bands; j++){//INTENTAR HACER ACCESOS A MEMORIA ADYACENTES
-			v[j] = U[i + j*endmembers];
+			v[j] = U[i*bands + j];
 		}
 
 		// for j = i-1 : -1 : 1
@@ -167,11 +167,11 @@ int main (int argc, char* argv[]){
 			//(v'*U(:,j))
 			faux = 0;
 			for(k = 0; k < bands; k++){//INTENTAR HACER ACCESOS A MEMORIA ADYACENTES
-				faux += v[k] * U[j + k*endmembers];
+				faux += v[k] * U[j*bands + k];
 			}
 			//(v'*U(:,j))*U(:,j);//HACER ACCESOS A MEMORIA ADYACENTES
 			for(k = 0; k < bands; k ++){
-				fvAux[k] = U[j + k*endmembers] * faux;
+				fvAux[k] = U[j*bands + k] * faux;
 			}
 			//v = v - (v'*U(:,j))*U(:,j);
 			for(k = 0; k < bands; k ++){//DICE QUE NO LO HACE PORQUE PARECE INEFICIENTE
@@ -185,7 +185,7 @@ int main (int argc, char* argv[]){
 		for(j = 0; j < image_size; j++){
 			faux = 0;
 			for(k = 0; k < bands; k++){//INTENTAR HACER ACCESOS ADYACENTES
-				faux += v[k] * image[j + image_size*k];
+				faux += v[k] * image[j*bands + k];
 			}
 			fvAux[j] = faux * faux;
 		}
@@ -210,6 +210,7 @@ int main (int argc, char* argv[]){
 
 	printf("Endmembers:\n");
     for(i = 0; i < endmembers; i++){
+		//printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld) \t- Valor: %f\n", i, J[i],(J[i] / cols),(J[i] % cols), normM1[J[i]]);
         printf("%ld \t- %ld\n", i, J[i]);
     }
 
@@ -263,22 +264,22 @@ void normalize_img(double *image, long int image_size, int bands){
     long int row;
 
     double *D = (double *) calloc (image_size, sizeof(double));               //aux array to normalize the input image
-
-    for(i = 0; i < bands; i++){
-		row = i * image_size;
-		for(k = 0; k < image_size; k++){
-        	D[k] += image[row + k];
-		} 
+	
+	for (i = 0; i < image_size ; i++){
+        for(j = 0; j < bands; j++){
+            D[i] += image[i*bands + j]; 
+        } 
     }
 
     for(i = 0; i < image_size; i++){
-        D[i] = powf(D[i] + 1.0e-16, -1);
+        //D[i] = powf(D[i] + 1.0e-16, -1);
+		D[i] = 1.0/(D[i] + 1.0e-16);
     }
 
 	//Esto se puede hacer en un for de longitud Bands*imagesize
 	#pragma omp parallel for
     for (i = 0; i < bands * image_size; i++){
-            image[i] = image[i] * D[i % image_size];
+            image[i] = image[i] * D[i/bands];
     }
 
     free(D);

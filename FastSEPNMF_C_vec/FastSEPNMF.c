@@ -7,9 +7,9 @@
 #include <sys/time.h>
 #include "ReadWrite.h"
 
-void normalize_img(double *image, long int image_size, int bands);
-long int max_val_extract_array(double *normMAux, long int *b_pos, long int b_pos_size);
-double max_Val(double *vector, long int image_size);
+void normalize_img(float *image, long int image_size, int bands);
+long int max_val_extract_array(float *normMAux, long int *b_pos, long int b_pos_size);
+float max_Val(float *vector, long int image_size);
 
 int main (int argc, char* argv[]){
 
@@ -20,7 +20,7 @@ int main (int argc, char* argv[]){
     int endmembers;
     int normalize;
     long int i, j, b_pos_size, d, k;
-    double max_val, a, b, faux;
+    float max_val, a, b, faux;
 
     if (argc != 5){
 		printf("******************************************************************\n");
@@ -45,21 +45,21 @@ int main (int argc, char* argv[]){
 
 
     long int image_size = cols*rows;
-    double *image = (double *) calloc (image_size * bands, sizeof(double));    	//input image
-    double *U = (double *) malloc (bands * endmembers * sizeof(double));       	//selected endmembers
-    double *normM = (double *) calloc (image_size, sizeof(double));            	//normalized image
-	double *normM1 = (double *) malloc (image_size * sizeof(double));			//copy of normM
-	double *normMAux = (double *) malloc (image_size * sizeof(double));			//aux array to find the positions of (a-normM)/a <= 1e-6
+    float *image = (float *) calloc (image_size * bands, sizeof(float));    	//input image
+    float *U = (float *) malloc (bands * endmembers * sizeof(float));       	//selected endmembers
+    float *normM = (float *) calloc (image_size, sizeof(float));            	//normalized image
+	float *normM1 = (float *) malloc (image_size * sizeof(float));			//copy of normM
+	float *normMAux = (float *) malloc (image_size * sizeof(float));			//aux array to find the positions of (a-normM)/a <= 1e-6
 	long int *b_pos = (long int *) malloc (image_size * sizeof(long int));	   	//valid positions of normM that meet (a-normM)/a <= 1e-6
-	double *v = (double *) malloc (bands * sizeof(double));						//used to update normM in every iteration
-	double *fvAux;                                                           	//float auxiliary array 
+	float *v = (float *) malloc (bands * sizeof(float));						//used to update normM in every iteration
+	float *fvAux;                                                           	//float auxiliary array 
     long int J[endmembers];                                                 	//selected endmembers positions in input image
 
 	if(image_size > bands){
-		fvAux = (double *) malloc (image_size * sizeof(double));                
+		fvAux = (float *) malloc (image_size * sizeof(float));                
 	}
 	else{
-		fvAux = (double *) malloc (bands * sizeof(double));
+		fvAux = (float *) malloc (bands * sizeof(float));
 	}
 
     Load_Image(argv[1], image, cols, rows, bands, datatype);
@@ -136,7 +136,7 @@ int main (int argc, char* argv[]){
 				faux += U[j*bands + k] * U[i*bands + k];
 			}
 			
-			;//MIRAR SI LOS ACCESOS A MEMORIA SE PUEDEN HACER ADYACENTES
+			//MIRAR SI LOS ACCESOS A MEMORIA SE PUEDEN HACER ADYACENTES
 			for(k = 0; k < bands; k ++){
 				fvAux[k] = U[j*bands + k] * faux;
 			}
@@ -180,6 +180,7 @@ int main (int argc, char* argv[]){
 		}
 
 		//(v'*M).^2
+		//normM = normM - (v'*M).^2;
 		gettimeofday(&t1,NULL);
 		#pragma omp parallel for
 		for(j = 0; j < image_size; j++){
@@ -188,15 +189,12 @@ int main (int argc, char* argv[]){
 				faux += v[k] * image[j*bands + k];
 			}
 			fvAux[j] = faux * faux;
+			normM[j] -= fvAux[j];
 		}
 		gettimeofday(&t2,NULL);
 		t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
 		t_usec = (float)  (t2.tv_usec - t1.tv_usec);
 		tCostSquare = tCostSquare + t_sec + t_usec/1.0e+6;
-		//normM = normM - (v'*M).^2;	
-		for(j = 0; j < image_size; j++){//DICE QUE PARECE INEFICIENTE VECTORIZAR
-			normM[j] -= fvAux[j];
-		}
 			
 		i = i + 1;
 		
@@ -231,8 +229,8 @@ int main (int argc, char* argv[]){
     return 0;
 }
 
-long int max_val_extract_array(double *normMAux, long int *b_pos, long int b_pos_size){
-	double max_val = -1;
+long int max_val_extract_array(float *normMAux, long int *b_pos, long int b_pos_size){
+	float max_val = -1;
 	long int pos = -1;
 	long int i;
     for (i = 0; i < b_pos_size; i++){ //DICE QUE NO SE PUEDE VECTORIZAR PORQUE MAXVAL DEPENDE DEL MAXVAL DE LA ITERACIÓN ANTERIOR
@@ -245,8 +243,8 @@ long int max_val_extract_array(double *normMAux, long int *b_pos, long int b_pos
 }
 
 
-double max_Val(double *vector, long int image_size){
-	double max_val = -1;
+float max_Val(float *vector, long int image_size){
+	float max_val = -1;
 	long int i;
 
     for (i = 0; i < image_size; i++){
@@ -259,11 +257,11 @@ double max_Val(double *vector, long int image_size){
 }
 
 
-void normalize_img(double *image, long int image_size, int bands){
+void normalize_img(float *image, long int image_size, int bands){
     long int i, j, k;
     long int row;
 
-    double *D = (double *) calloc (image_size, sizeof(double));               //aux array to normalize the input image
+    float *D = (float *) calloc (image_size, sizeof(float));               //aux array to normalize the input image
 	
 	for (i = 0; i < image_size ; i++){
         for(j = 0; j < bands; j++){

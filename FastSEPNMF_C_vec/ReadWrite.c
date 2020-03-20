@@ -76,7 +76,7 @@ void readHeader(char* filename, int *cols, int *rows, int *numBands, int *dataTy
 
 
 //load the image "filename" and do a cast over the original datatype into float datatype. Thus, it can operate with data inside the image.
-void Load_Image(char* filename, double *imageVector, int cols, int rows, int numBands, int dataType){
+void Load_Image(char* filename, float *imageVector, int cols, int rows, int numBands, int dataType){
 
 	FILE *fp;
 	short int *tipo_short_int;
@@ -105,7 +105,7 @@ void Load_Image(char* filename, double *imageVector, int cols, int rows, int num
 					for(i=0; i<numBands; i+=1){
 						for(j= 0; j < rows; j+=1 ){
 							for(k = 0; k < cols; k+=1){
-								value=(double)tipo_short_int[h];
+								value=(float)tipo_short_int[h];
 								if(value<0){
 									imageVector[numBands*(h%lines_samples) + i]=0.0;
 								}else{
@@ -119,6 +119,7 @@ void Load_Image(char* filename, double *imageVector, int cols, int rows, int num
 					break;
 			//float datatype
 				case 4:
+					printf("Leyendo tipo float\n");
 					tipo_float = (float *) malloc (lines_samples*numBands * sizeof(float));
 					fread(tipo_float,1,(sizeof(float)*lines_samples*numBands),fp);
 					#pragma loop count min(1024)
@@ -138,13 +139,14 @@ void Load_Image(char* filename, double *imageVector, int cols, int rows, int num
 					break;
 		//double datatype
 				case 5:
+					printf("Leyendo tipo double\n");
 					tipo_double = (double *) malloc (lines_samples*numBands * sizeof(double));
 					fread(tipo_double,1,(sizeof(double)*lines_samples*numBands),fp);
 					#pragma loop count min(1024)
 					for(i=0; i<numBands; i+=1){
 						for(j= 0; j < rows; j+=1 ){
 							for(k = 0; k < cols; k+=1){
-								value=tipo_double[h];
+								value=(float)tipo_double[h];
 								if(value<0)
 									imageVector[numBands*(h%lines_samples) + i]=0.0;                				
 								else

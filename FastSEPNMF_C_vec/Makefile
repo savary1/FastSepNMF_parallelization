@@ -13,7 +13,7 @@ LIBRARIES := -lm
 #GCC_novec
 #OPT := -O1 -fno-tree-vectorize -ffast-math 
 #GCC_autovec
-#OPT := -O3 -ftree-vectorizer-verbose=6 -ffast-math -ftree-parallelize-loops=3
+#OPT := -O3 -march=native -ftree-vectorizer-verbose=6 -ffast-math -ftree-parallelize-loops=3
 #ICC_novec
 #OPT := -01 -restrict -no-vec
 #ICC_autovec

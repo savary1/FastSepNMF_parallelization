@@ -20,6 +20,7 @@ long int max_val_extract_array(float *normMAux, long int *b_pos, long int b_pos_
 float max_Val(float *vector, long int image_size);
 void exit_if_OpenCL_fail(cl_int code, char* msg);
 cl_device_id select_device();
+cl_program build_kernels(cl_context clContext, cl_device_id selectedDevice);
 
 
 
@@ -32,7 +33,11 @@ int main (int argc, char* argv[]){
     long int i, j, b_pos_size, d, k;
     float max_val, a, b, faux;
 
+	cl_int status;
 	cl_device_id selectedDevice;
+	cl_context clContext;
+	cl_command_queue clQueue;
+	cl_program clProgram;
 	
 
     if (argc != 5){
@@ -53,6 +58,14 @@ int main (int argc, char* argv[]){
 	/************************************* #INIT# - OpenCL init****************************************/
 	
     selectedDevice = select_device();
+
+	clContext = clCreateContext(NULL, 1, &selectedDevice, NULL, NULL, &status);
+	exit_if_OpenCL_fail(status, "clCreateContext returned error");
+
+	clQueue = clCreateCommandQueue(clContext, selectedDevice, CL_QUEUE_PROFILING_ENABLE, &status);
+	exit_if_OpenCL_fail(status, "clCreateContext returned error");
+
+	clProgram = build_kernels(clContext, selectedDevice);
 
 	/************************************* #END# - OpenCL init****************************************/
 
@@ -250,6 +263,8 @@ int main (int argc, char* argv[]){
     return 0;
 }
 
+
+
 long int max_val_extract_array(float *normMAux, long int *b_pos, long int b_pos_size){
 	float max_val = -1;
 	long int pos = -1;
@@ -264,6 +279,7 @@ long int max_val_extract_array(float *normMAux, long int *b_pos, long int b_pos_
 }
 
 
+
 float max_Val(float *vector, long int image_size){
 	float max_val = -1;
 	long int i;
@@ -276,6 +292,7 @@ float max_Val(float *vector, long int image_size){
 
 	return max_val;
 }
+
 
 
 void normalize_img(float *image, long int image_size, int bands){
@@ -304,6 +321,8 @@ void normalize_img(float *image, long int image_size, int bands){
     free(D);
 }
 
+
+
 void exit_if_OpenCL_fail(cl_int code, char* msg){
 	if(code != CL_SUCCESS){
 		printf("Error: %s\n", msg);
@@ -312,12 +331,15 @@ void exit_if_OpenCL_fail(cl_int code, char* msg){
 	}
 }
 
+
+
 cl_device_id select_device(){
 	cl_int status;
-	cl_uint numPlatforms, numDevices;
+	cl_uint numPlatforms, numDevices, deviceNumInfo;
+	cl_ulong deviceLongInfo;
 	size_t infoSize;
-	char* platformName, deviceName;
-	int i, j, selectedPlatform, selectedDevice;
+	char *platformName, *deviceInfo;
+	int i, selectedPlatform, selectedDevice;
 
 	status = clGetPlatformIDs(0, NULL, &numPlatforms);
 	exit_if_OpenCL_fail(status, "clGetPlatformIDs returned error");
@@ -354,11 +376,24 @@ cl_device_id select_device(){
 	for(i = 0; i < numDevices; i++){
 		status = clGetDeviceInfo(deviceIDs[i], CL_DEVICE_NAME, 0, NULL, &infoSize);
 		exit_if_OpenCL_fail(status, "clGetDeviceInfo returned error");
-		
-		deviceName = (char*)alloca(sizeof(char)*infoSize);
-		status = clGetDeviceInfo(deviceIDs[i], CL_DEVICE_NAME, infoSize, platformName, NULL);
+		deviceInfo = (char*)alloca(sizeof(char)*infoSize);
+
+		status = clGetDeviceInfo(deviceIDs[i], CL_DEVICE_NAME, infoSize, deviceInfo, NULL);
 		exit_if_OpenCL_fail(status, "clGetDeviceInfo returned error");
-		printf("\t - Device %d: %s\n", i, platformName);		
+		printf("\t - Device %d: %s", i, deviceInfo);	
+
+		status = clGetDeviceInfo(deviceIDs[i], CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(deviceNumInfo), &deviceNumInfo, NULL);
+		exit_if_OpenCL_fail(status, "clGetDeviceInfo returned error");
+		printf("  CU: %u", deviceNumInfo);
+
+		status = clGetDeviceInfo(deviceIDs[i], CL_DEVICE_LOCAL_MEM_SIZE, sizeof(deviceLongInfo), &deviceLongInfo, NULL);
+		exit_if_OpenCL_fail(status, "clGetDeviceInfo returned error");
+		printf("  Local Memory: %u KB", (unsigned int) (deviceLongInfo/1024));
+
+
+		status = clGetDeviceInfo(deviceIDs[i], CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(deviceLongInfo), &deviceLongInfo, NULL);
+		exit_if_OpenCL_fail(status, "clGetDeviceInfo returned error");
+		printf("  Global Memory: %u MB\n", (unsigned int) (deviceLongInfo/1e6));
 	}
 
 	printf("\nChoose a device: ");
@@ -367,5 +402,35 @@ cl_device_id select_device(){
 	if(selectedDevice > numDevices - 1)
 		exit_if_OpenCL_fail(CL_DEVICE_NOT_AVAILABLE, "Device number is not valid");
 
-	return selectedDevice;
+	return deviceIDs[selectedDevice];
+}
+
+
+
+cl_program build_kernels(cl_context clContext, cl_device_id selectedDevice) {
+	cl_program clProgram;
+	cl_int status;
+	FILE *f;
+	char *sourceCode;
+	long size;
+
+	f = fopen("kernels.cl", "r");
+	if(f == NULL)
+		exit_if_OpenCL_fail(CL_BUILD_PROGRAM_FAILURE, "Error opening the file containing the kernels");
+
+	fseek(f, 0, SEEK_END);
+	size = ftell(f);
+	rewind(f);
+
+	sourceCode = malloc(sizeof(char) * (size + 1));
+	fread(sourceCode, 1, size, f);
+	sourceCode[size] = '\0';
+
+	clProgram = clCreateProgramWithSource(clContext, 1, (const char **) &sourceCode, NULL, &status);
+		exit_if_OpenCL_fail(status, "Error creating cumputing program");
+
+	status = clBuildProgram(clProgram, 1, &selectedDevice, NULL, NULL, NULL);
+		exit_if_OpenCL_fail(status, "Error building cumputing program");
+	
+	return clProgram;
 }

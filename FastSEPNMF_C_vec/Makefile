@@ -17,7 +17,7 @@ LIBRARIES := -lm
 #ICC_novec
 #OPT := -01 -restrict -no-vec
 #ICC_autovec
-OPT := -O3 -restrict -qopt-report-phase=vec,loop -qopt-report=3 -qopenmp
+OPT := -O3 -restrict -qopt-report-phase=vec,loop,openmp -qopt-report=3 -qopenmp
 
 CC = icc
 

@@ -38,6 +38,8 @@ int main (int argc, char* argv[]){
 	cl_context clContext;
 	cl_command_queue clQueue;
 	cl_program clProgram;
+	cl_kernel updateNormMKernel;
+	cl_mem clImage, clV, clNormM;
 	
 
     if (argc != 5){
@@ -67,6 +69,9 @@ int main (int argc, char* argv[]){
 
 	clProgram = build_kernels(clContext, selectedDevice);
 
+	updateNormMKernel = clCreateKernel(clProgram, "update_normM", &status)
+	exit_if_OpenCL_fail(status, "Error creating update_normM kernel");
+
 	/************************************* #END# - OpenCL init****************************************/
 
 
@@ -88,6 +93,10 @@ int main (int argc, char* argv[]){
 	float *v = (float *) malloc (bands * sizeof(float));						//used to update normM in every iteration
 	float *fvAux;                                                           	//float auxiliary array 
     long int J[endmembers];                                                 	//selected endmembers positions in input image
+
+	clImage = clCreateBuffer(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, image_size * bands * sizeof(float), image, &status)
+	exit_if_OpenCL_fail(status, "Error creating clImage buffer on device");
+
 
 	if(image_size > bands){
 		fvAux = (float *) malloc (image_size * sizeof(float));                

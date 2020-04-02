@@ -208,8 +208,7 @@ int main (int argc, char* argv[]){
 
 	printf("Endmembers:\n");
     for(i = 0; i < endmembers; i++){
-		//printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld) \t- Valor: %f\n", i, J[i],(J[i] / cols),(J[i] % cols), normM1[J[i]]);
-        printf("%ld \t- %ld\n", i, J[i]);
+		printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld) \t- Valor: %f\n", i, J[i],(J[i] / cols),(J[i] % cols), normM1[J[i]]);
     }
 
 	printf("Total time:	\t%.5f segundos\n", secsFin);

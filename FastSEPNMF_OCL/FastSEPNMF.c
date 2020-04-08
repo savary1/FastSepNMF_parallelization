@@ -69,7 +69,7 @@ int main (int argc, char* argv[]){
 
 	clProgram = build_kernels(clContext, selectedDevice);
 
-	updateNormMKernel = clCreateKernel(clProgram, "update_normM", &status)
+	updateNormMKernel = clCreateKernel(clProgram, "update_normM", &status);
 	exit_if_OpenCL_fail(status, "Error creating update_normM kernel");
 
 	/************************************* #END# - OpenCL init****************************************/
@@ -83,19 +83,27 @@ int main (int argc, char* argv[]){
     printf("\nLines = %d  Samples = %d  Nbands = %d  Data_type = %d\n", rows, cols, bands, datatype);
 
 
-    long int image_size = cols*rows;
-    float *image = (float *) calloc (image_size * bands, sizeof(float));    	//input image
+    int image_size = cols*rows;
+    float *image = (float *) malloc (image_size * bands * sizeof(float));    	//input image
     float *U = (float *) malloc (bands * endmembers * sizeof(float));       	//selected endmembers
     float *normM = (float *) calloc (image_size, sizeof(float));            	//normalized image
-	float *normM1 = (float *) malloc (image_size * sizeof(float));			//copy of normM
+	float *normM1 = (float *) malloc (image_size * sizeof(float));				//copy of normM
 	float *normMAux = (float *) malloc (image_size * sizeof(float));			//aux array to find the positions of (a-normM)/a <= 1e-6
-	long int *b_pos = (long int *) malloc (image_size * sizeof(long int));	   	//valid positions of normM that meet (a-normM)/a <= 1e-6
+	long int *b_pos1 = (long int *) malloc (image_size * sizeof(long int));	   	//valid positions of normM that meet (a-normM)/a <= 1e-6
 	float *v = (float *) malloc (bands * sizeof(float));						//used to update normM in every iteration
 	float *fvAux;                                                           	//float auxiliary array 
     long int J[endmembers];                                                 	//selected endmembers positions in input image
 
-	clImage = clCreateBuffer(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, image_size * bands * sizeof(float), image, &status)
+	size_t localSize = 512;
+	size_t globalsize = ceil(image_size/(float)localSize) * localSize;
+
+	clImage = clCreateBuffer(clContext, CL_MEM_READ_ONLY, image_size * bands * sizeof(float), NULL, &status);
 	exit_if_OpenCL_fail(status, "Error creating clImage buffer on device");
+	clNormM = clCreateBuffer(clContext, CL_MEM_READ_WRITE, image_size * sizeof(float), NULL, &status);
+	exit_if_OpenCL_fail(status, "Error creating clNorm buffer on device");
+	clV = clCreateBuffer(clContext, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, bands * sizeof(float), v, &status);
+	exit_if_OpenCL_fail(status, "Error creating clV buffer on device");
+
 
 
 	if(image_size > bands){
@@ -106,6 +114,7 @@ int main (int argc, char* argv[]){
 	}
 
     Load_Image(argv[1], image, cols, rows, bands, datatype);
+
 	/**************************** #END# - Load Image and allocate memory*******************************/
 
 	gettimeofday(&t0,NULL);
@@ -135,6 +144,22 @@ int main (int argc, char* argv[]){
 	for(i = 0; i < image_size; i++){
 		normM1[i] = normM[i];
 	}
+	status = clEnqueueWriteBuffer(clQueue, clImage, CL_TRUE, 0, image_size * bands * sizeof(float), image, 0, NULL, NULL);
+	exit_if_OpenCL_fail(status, "Error copying the image to the device");
+	status = clEnqueueWriteBuffer(clQueue, clNormM, CL_TRUE, 0, image_size * sizeof(float), normM, 0, NULL, NULL);
+	exit_if_OpenCL_fail(status, "Error copying normM to the device");
+
+	status  = clSetKernelArg(updateNormMKernel, 0, sizeof(cl_mem), &clImage);
+	exit_if_OpenCL_fail(status, "Error setting image as parameter in the device");
+	status  = clSetKernelArg(updateNormMKernel, 1, sizeof(cl_mem), &clV);
+	exit_if_OpenCL_fail(status, "Error setting v as parameter in the device");
+	status  = clSetKernelArg(updateNormMKernel, 2, sizeof(cl_mem), &clNormM);
+	exit_if_OpenCL_fail(status, "Error setting normM as parameter in the device");
+	status = clSetKernelArg(updateNormMKernel, 3, sizeof(int), &bands);
+	exit_if_OpenCL_fail(status, "Error setting bands as parameter in the device");
+	status = clSetKernelArg(updateNormMKernel, 4, sizeof(int), &image_size);
+	exit_if_OpenCL_fail(status, "Error setting image_size as parameter in the device");
+	
 
 	i = 0;
 	//while i <= r && max(normM)/nM > 1e-9
@@ -151,19 +176,19 @@ int main (int argc, char* argv[]){
 		b_pos_size = 0;
 		for(j = 0; j < image_size; j++){
 			if (normMAux[j]<= 1.0e-6){
-				b_pos[b_pos_size] = j;
+				b_pos1[b_pos_size] = j;
 				b_pos_size++;
 			}
 		}
 		
 		//if length(b) > 1, [c,d] = max(normM1(b)); b = b(d);
 		if (b_pos_size > 1){
-			d = max_val_extract_array(normM1, b_pos, b_pos_size);
-			b = b_pos[d];
+			d = max_val_extract_array(normM1, b_pos1, b_pos_size);
+			b = b_pos1[d];
 			J[i] = b;
 		}
 		else{ // comprobar si siempre tiene valores b_pos
-			J[i] = b_pos[0];
+			J[i] = b_pos1[0];
 		}
 		
 		//U(:,i) = M(:,b);  //MIRAR SI SE PUEDEN HACER LOS ACCESOS A MEMORIA ADYACENTES
@@ -224,20 +249,42 @@ int main (int argc, char* argv[]){
 
 		//(v'*M).^2
 		//normM = normM - (v'*M).^2;
+		
+		// #pragma omp parallel for
+		// for(j = 0; j < image_size; j++){
+		// 	faux = 0;
+		// 	for(k = 0; k < bands; k++){//INTENTAR HACER ACCESOS ADYACENTES
+		// 		faux += v[k] * image[j*bands + k];
+		// 	}
+		// 	fvAux[j] = faux * faux;
+		// 	normM[j] -= fvAux[j];
+		// }
+		
+		status = clEnqueueWriteBuffer(clQueue, clV, CL_TRUE, 0, bands * sizeof(float), v, 0, NULL, NULL);
+		exit_if_OpenCL_fail(status, "Error copying v to the device");
+
+		// status  = clSetKernelArg(updateNormMKernel, 1, sizeof(cl_mem), &clV);
+		// exit_if_OpenCL_fail(status, "Error setting v as parameter in the device");
+		// status  = clSetKernelArg(updateNormMKernel, 2, sizeof(cl_mem), &clNormM);
+		// exit_if_OpenCL_fail(status, "Error setting normM as parameter in the device");
+		// status = clSetKernelArg(updateNormMKernel, 3, sizeof(long int), &bands);
+		// exit_if_OpenCL_fail(status, "Error setting bands as parameter in the device");
+
 		gettimeofday(&t1,NULL);
-		#pragma omp parallel for
-		for(j = 0; j < image_size; j++){
-			faux = 0;
-			for(k = 0; k < bands; k++){//INTENTAR HACER ACCESOS ADYACENTES
-				faux += v[k] * image[j*bands + k];
-			}
-			fvAux[j] = faux * faux;
-			normM[j] -= fvAux[j];
-		}
+		printf("Ejecutando kernel - %d\n", i);
+		status = clEnqueueNDRangeKernel(clQueue, updateNormMKernel, 1, NULL, &globalsize, &localSize, 0, NULL, NULL);
+		exit_if_OpenCL_fail(status, "Error executing kernel");
+		clFinish(clQueue);
 		gettimeofday(&t2,NULL);
 		t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
 		t_usec = (float)  (t2.tv_usec - t1.tv_usec);
 		tCostSquare = tCostSquare + t_sec + t_usec/1.0e+6;
+
+		status = clEnqueueReadBuffer(clQueue, clNormM, CL_TRUE, 0, image_size * sizeof(float), normM, 0, NULL, NULL);
+		exit_if_OpenCL_fail(status, "Error reading normM from the device");
+		clFinish(clQueue);
+
+		
 			
 		i = i + 1;
 		
@@ -251,21 +298,27 @@ int main (int argc, char* argv[]){
 
 	printf("Endmembers:\n");
     for(i = 0; i < endmembers; i++){
-		//printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld) \t- Valor: %f\n", i, J[i],(J[i] / cols),(J[i] % cols), normM1[J[i]]);
-        printf("%ld \t- %ld\n", i, J[i]);
+		printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld) \t- Valor: %f\n", i, J[i],(J[i] / cols),(J[i] % cols), normM1[J[i]]);
     }
 
 	printf("Total time:	\t%.5f segundos\n", secsFin);
 	printf("T norm:	\t\t%.5f segundos\n", tNorm);
 	printf("T square loop:	\t%.5f segundos\n", tCostSquare);
 
-    
+	clReleaseMemObject(clImage);
+   	clReleaseMemObject(clNormM);
+	clReleaseMemObject(clV);
+   	clReleaseKernel(updateNormMKernel);
+   	clReleaseProgram(clProgram);
+	clReleaseContext(clContext);
+   	clReleaseCommandQueue(clQueue);
+
     free(image);
     free(U);
     free(normM);
 	free(normM1);
 	free(normMAux);
-	free(b_pos);
+	free(b_pos1);
 	free(fvAux);
 	free(v);
 
@@ -346,7 +399,7 @@ cl_device_id select_device(){
 	cl_int status;
 	cl_uint numPlatforms, numDevices, deviceNumInfo;
 	cl_ulong deviceLongInfo;
-	size_t infoSize;
+	size_t infoSize, localWorkSize;
 	char *platformName, *deviceInfo;
 	int i, selectedPlatform, selectedDevice;
 
@@ -403,6 +456,10 @@ cl_device_id select_device(){
 		status = clGetDeviceInfo(deviceIDs[i], CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(deviceLongInfo), &deviceLongInfo, NULL);
 		exit_if_OpenCL_fail(status, "clGetDeviceInfo returned error");
 		printf("  Global Memory: %u MB\n", (unsigned int) (deviceLongInfo/1e6));
+
+		status = clGetDeviceInfo(deviceIDs[i], CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(size_t), &localWorkSize, NULL);
+		exit_if_OpenCL_fail(status, "clGetDeviceInfo returned error");
+		printf("  Max work group size: %zd\n", localWorkSize);
 	}
 
 	printf("\nChoose a device: ");
@@ -418,10 +475,11 @@ cl_device_id select_device(){
 
 cl_program build_kernels(cl_context clContext, cl_device_id selectedDevice) {
 	cl_program clProgram;
-	cl_int status;
+	cl_int status, buildLogStatus;
 	FILE *f;
-	char *sourceCode;
+	char *sourceCode, *logBuff;
 	long size;
+	size_t logSize;
 
 	f = fopen("kernels.cl", "r");
 	if(f == NULL)
@@ -436,10 +494,20 @@ cl_program build_kernels(cl_context clContext, cl_device_id selectedDevice) {
 	sourceCode[size] = '\0';
 
 	clProgram = clCreateProgramWithSource(clContext, 1, (const char **) &sourceCode, NULL, &status);
-		exit_if_OpenCL_fail(status, "Error creating cumputing program");
+	exit_if_OpenCL_fail(status, "Error creating cumputing program");
 
 	status = clBuildProgram(clProgram, 1, &selectedDevice, NULL, NULL, NULL);
-		exit_if_OpenCL_fail(status, "Error building cumputing program");
+		buildLogStatus = clGetProgramBuildInfo(clProgram, selectedDevice, CL_PROGRAM_BUILD_LOG, NULL, NULL, &logSize);
+		exit_if_OpenCL_fail(buildLogStatus, "Error getting kernel build logs (1)");
+		logBuff = (char *) malloc(logSize);
+		buildLogStatus = clGetProgramBuildInfo(clProgram, selectedDevice, CL_PROGRAM_BUILD_LOG, logSize, logBuff, NULL);
+		exit_if_OpenCL_fail(buildLogStatus, "Error getting kernel build logs (2)");
+		printf("Kernel build log:\n %s", logBuff);
+	exit_if_OpenCL_fail(status, "Error building computing program");
 	
+	close(f);
+	free(sourceCode);
+	free(logBuff);
+
 	return clProgram;
 }

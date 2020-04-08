@@ -119,7 +119,6 @@ void Load_Image(char* filename, float *imageVector, int cols, int rows, int numB
 					break;
 			//float datatype
 				case 4:
-					printf("Leyendo tipo float\n");
 					tipo_float = (float *) malloc (lines_samples*numBands * sizeof(float));
 					fread(tipo_float,1,(sizeof(float)*lines_samples*numBands),fp);
 					#pragma loop count min(1024)
@@ -139,7 +138,6 @@ void Load_Image(char* filename, float *imageVector, int cols, int rows, int numB
 					break;
 		//double datatype
 				case 5:
-					printf("Leyendo tipo double\n");
 					tipo_double = (double *) malloc (lines_samples*numBands * sizeof(double));
 					fread(tipo_double,1,(sizeof(double)*lines_samples*numBands),fp);
 					#pragma loop count min(1024)

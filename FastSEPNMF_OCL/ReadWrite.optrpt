@@ -2,30 +2,13 @@ Intel(R) Advisor can now assist with vectorization and show optimization
   report messages with your source code.
 See "https://software.intel.com/en-us/intel-advisor-xe" for details.
 
+Intel(R) C Intel(R) 64 Compiler for applications running on Intel(R) 64, Version 18.0.1.163 Build 20171018
 
-    Report from: Interprocedural optimizations [ipo]
-
-INLINING OPTION VALUES:
-  -inline-factor: 100
-  -inline-min-size: 30
-  -inline-max-size: 230
-  -inline-max-total-size: 2000
-  -inline-max-per-routine: 10000
-  -inline-max-per-compile: 500000
-
+Compiler options: -O3 -restrict -qopt-report-phase=vec,loop,openmp -qopt-report=3 -qopenmp -L/optshared/cuda/lib64 -o ReadWrite.o -c -w
 
 Begin optimization report for: cleanString(char *, char *)
 
-    Report from: Interprocedural optimizations [ipo]
-
-INLINE REPORT: (cleanString(char *, char *)) [2] ReadWrite.c(12,42)
-
-
-    Report from: Loop nest, Vector & Auto-parallelization optimizations [loop, vec, par]
-
-
-
-Non-optimizable loops:
+    Report from: Loop nest & Vector optimizations [loop, vec]
 
 
 LOOP BEGIN at ReadWrite.c(15,6)
@@ -34,315 +17,142 @@ LOOP END
 
 LOOP BEGIN at ReadWrite.c(21,6)
    remark #15523: loop was not vectorized: loop control variable i was found, but loop iteration count cannot be computed before executing the loop
+   remark #25478: While Loop Unrolled by 2  
 LOOP END
-
-    Report from: Code generation optimizations [cg]
-
-ReadWrite.c(12,42):remark #34051: REGISTER ALLOCATION : [cleanString] ReadWrite.c:12
-
-    Hardware registers
-        Reserved     :    2[ rsp rip]
-        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
-        Callee-save  :    6[ rbx rbp r12-r15]
-        Assigned     :    9[ rax rdx rcx rbx rbp rsi rdi r12 r15]
-        
-    Routine temporaries
-        Total         :      18
-            Global    :      14
-            Local     :       4
-        Regenerable   :       0
-        Spilled       :       4
-        
-    Routine stack
-        Variables     :       0 bytes*
-            Reads     :       0 [0.00e+00 ~ 0.0%]
-            Writes    :       0 [0.00e+00 ~ 0.0%]
-        Spills        :       0 bytes*
-            Reads     :       0 [0.00e+00 ~ 0.0%]
-            Writes    :       0 [0.00e+00 ~ 0.0%]
-    
-    Notes
-    
-        *Non-overlapping variables and spills may share stack space,
-         so the total stack size might be less than this.
-    
-
 ===========================================================================
 
 Begin optimization report for: readHeader(char *, int *, int *, int *, int *)
 
-    Report from: Interprocedural optimizations [ipo]
-
-INLINE REPORT: (readHeader(char *, int *, int *, int *, int *)) [3] ReadWrite.c(25,84)
-  -> INLINE: (54,11) atoi(const char *)
-     {{ Inlining of routines from system headers is omitted. Use -qopt-report=3 to view full report. }}
-  -> INLINE: (59,11) atoi(const char *)
-     {{ Inlining of routines from system headers is omitted. Use -qopt-report=3 to view full report. }}
-  -> INLINE: (64,15) atoi(const char *)
-     {{ Inlining of routines from system headers is omitted. Use -qopt-report=3 to view full report. }}
-  -> INLINE: (69,15) atoi(const char *)
-     {{ Inlining of routines from system headers is omitted. Use -qopt-report=3 to view full report. }}
-
-
-    Report from: Loop nest, Vector & Auto-parallelization optimizations [loop, vec, par]
-
-
-
-Non-optimizable loops:
+    Report from: Loop nest & Vector optimizations [loop, vec]
 
 
 LOOP BEGIN at ReadWrite.c(48,3)
    remark #15521: loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
 LOOP END
-
-    Report from: Code generation optimizations [cg]
-
-ReadWrite.c(25,84):remark #34051: REGISTER ALLOCATION : [readHeader] ReadWrite.c:25
-
-    Hardware registers
-        Reserved     :    2[ rsp rip]
-        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
-        Callee-save  :    6[ rbx rbp r12-r15]
-        Assigned     :   12[ rax rdx rcx rbx rbp rsi rdi r8 r12-r15]
-        
-    Routine temporaries
-        Total         :     110
-            Global    :      39
-            Local     :      71
-        Regenerable   :      46
-        Spilled       :       6
-        
-    Routine stack
-        Variables     :     200 bytes*
-            Reads     :       0 [0.00e+00 ~ 0.0%]
-            Writes    :       0 [0.00e+00 ~ 0.0%]
-        Spills        :       0 bytes*
-            Reads     :       0 [0.00e+00 ~ 0.0%]
-            Writes    :       0 [0.00e+00 ~ 0.0%]
-    
-    Notes
-    
-        *Non-overlapping variables and spills may share stack space,
-         so the total stack size might be less than this.
-    
-
 ===========================================================================
 
-Begin optimization report for: Load_Image(char *, double *, int, int, int, int)
+Begin optimization report for: Load_Image(char *, float *, int, int, int, int)
 
-    Report from: Interprocedural optimizations [ipo]
-
-INLINE REPORT: (Load_Image(char *, double *, int, int, int, int)) [4] ReadWrite.c(79,101)
-
-
-    Report from: Loop nest, Vector & Auto-parallelization optimizations [loop, vec, par]
+    Report from: Loop nest & Vector optimizations [loop, vec]
 
 
 LOOP BEGIN at ReadWrite.c(105,6)
-   remark #15542: loop was not vectorized: inner loop was already vectorized
+   remark #25096: Loop Interchange not done due to: Imperfect Loop Nest (Either at Source or due to other Compiler Transformations)
+   remark #25452: Original Order found to be proper, but by a close margin
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed OUTPUT dependence between imageVector[numBands*?+i] (109:9) and imageVector[numBands*?+i] (109:9)
 
-   LOOP BEGIN at ReadWrite.c(107,7)
-      remark #15542: loop was not vectorized: inner loop was already vectorized
+   LOOP BEGIN at ReadWrite.c(106,7)
+      remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+      remark #15346: vector dependence: assumed OUTPUT dependence between imageVector[numBands*?+i] (109:9) and imageVector[numBands*?+i] (109:9)
 
-      LOOP BEGIN at ReadWrite.c(108,8)
-         remark #15300: LOOP WAS VECTORIZED
-      LOOP END
-
-      LOOP BEGIN at ReadWrite.c(108,8)
-      <Remainder loop for vectorization>
-         remark #15301: REMAINDER LOOP WAS VECTORIZED
-      LOOP END
-
-      LOOP BEGIN at ReadWrite.c(108,8)
-      <Remainder loop for vectorization>
+      LOOP BEGIN at ReadWrite.c(107,8)
+         remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+         remark #15450: unmasked unaligned unit stride loads: 1 
+         remark #15463: unmasked indexed (or scatter) stores: 1 
+         remark #15475: --- begin vector cost summary ---
+         remark #15476: scalar cost: 37 
+         remark #15477: vector cost: 60.250 
+         remark #15478: estimated potential speedup: 0.610 
+         remark #15482: vectorized math library calls: 1 
+         remark #15487: type converts: 1 
+         remark #15488: --- end vector cost summary ---
          remark #25456: Number of Array Refs Scalar Replaced In Loop: 1
       LOOP END
    LOOP END
 LOOP END
 
-LOOP BEGIN at ReadWrite.c(126,6)
-   remark #15542: loop was not vectorized: inner loop was already vectorized
+LOOP BEGIN at ReadWrite.c(125,6)
+   remark #25096: Loop Interchange not done due to: Imperfect Loop Nest (Either at Source or due to other Compiler Transformations)
+   remark #25452: Original Order found to be proper, but by a close margin
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed OUTPUT dependence between imageVector[numBands*?+i] (129:9) and imageVector[numBands*?+i] (129:9)
 
-   LOOP BEGIN at ReadWrite.c(128,7)
-      remark #15542: loop was not vectorized: inner loop was already vectorized
+   LOOP BEGIN at ReadWrite.c(126,7)
+      remark #25096: Loop Interchange not done due to: Imperfect Loop Nest (Either at Source or due to other Compiler Transformations)
+      remark #25452: Original Order found to be proper, but by a close margin
+      remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+      remark #15346: vector dependence: assumed OUTPUT dependence between imageVector[numBands*?+i] (129:9) and imageVector[numBands*?+i] (129:9)
 
-      LOOP BEGIN at ReadWrite.c(129,8)
-         remark #15300: LOOP WAS VECTORIZED
-      LOOP END
-
-      LOOP BEGIN at ReadWrite.c(129,8)
-      <Remainder loop for vectorization>
-         remark #15301: REMAINDER LOOP WAS VECTORIZED
-      LOOP END
-
-      LOOP BEGIN at ReadWrite.c(129,8)
-      <Remainder loop for vectorization>
+      LOOP BEGIN at ReadWrite.c(127,8)
+         remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+         remark #15450: unmasked unaligned unit stride loads: 1 
+         remark #15463: unmasked indexed (or scatter) stores: 1 
+         remark #15475: --- begin vector cost summary ---
+         remark #15476: scalar cost: 35 
+         remark #15477: vector cost: 59.750 
+         remark #15478: estimated potential speedup: 0.580 
+         remark #15482: vectorized math library calls: 1 
+         remark #15488: --- end vector cost summary ---
          remark #25456: Number of Array Refs Scalar Replaced In Loop: 1
       LOOP END
    LOOP END
 LOOP END
 
-LOOP BEGIN at ReadWrite.c(146,6)
-   remark #15542: loop was not vectorized: inner loop was already vectorized
+LOOP BEGIN at ReadWrite.c(144,6)
+   remark #25096: Loop Interchange not done due to: Imperfect Loop Nest (Either at Source or due to other Compiler Transformations)
+   remark #25452: Original Order found to be proper, but by a close margin
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed OUTPUT dependence between imageVector[numBands*?+i] (148:9) and imageVector[numBands*?+i] (148:9)
 
-   LOOP BEGIN at ReadWrite.c(148,7)
-      remark #15542: loop was not vectorized: inner loop was already vectorized
+   LOOP BEGIN at ReadWrite.c(145,7)
+      remark #25096: Loop Interchange not done due to: Imperfect Loop Nest (Either at Source or due to other Compiler Transformations)
+      remark #25452: Original Order found to be proper, but by a close margin
+      remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+      remark #15346: vector dependence: assumed OUTPUT dependence between imageVector[numBands*?+i] (148:9) and imageVector[numBands*?+i] (148:9)
 
-      LOOP BEGIN at ReadWrite.c(149,8)
-      <Peeled loop for vectorization>
-         remark #25456: Number of Array Refs Scalar Replaced In Loop: 1
-      LOOP END
-
-      LOOP BEGIN at ReadWrite.c(149,8)
-         remark #15300: LOOP WAS VECTORIZED
-      LOOP END
-
-      LOOP BEGIN at ReadWrite.c(149,8)
-      <Remainder loop for vectorization>
-         remark #15301: REMAINDER LOOP WAS VECTORIZED
-      LOOP END
-
-      LOOP BEGIN at ReadWrite.c(149,8)
-      <Remainder loop for vectorization>
+      LOOP BEGIN at ReadWrite.c(146,8)
+         remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+         remark #15450: unmasked unaligned unit stride loads: 1 
+         remark #15463: unmasked indexed (or scatter) stores: 1 
+         remark #15475: --- begin vector cost summary ---
+         remark #15476: scalar cost: 36 
+         remark #15477: vector cost: 60.750 
+         remark #15478: estimated potential speedup: 0.590 
+         remark #15482: vectorized math library calls: 1 
+         remark #15487: type converts: 1 
+         remark #15488: --- end vector cost summary ---
          remark #25456: Number of Array Refs Scalar Replaced In Loop: 1
       LOOP END
    LOOP END
 LOOP END
-
-    Report from: Code generation optimizations [cg]
-
-ReadWrite.c(79,101):remark #34051: REGISTER ALLOCATION : [Load_Image] ReadWrite.c:79
-
-    Hardware registers
-        Reserved     :    2[ rsp rip]
-        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
-        Callee-save  :    6[ rbx rbp r12-r15]
-        Assigned     :   31[ rax rdx rcx rbx rbp rsi rdi r8-r15 zmm0-zmm15]
-        
-    Routine temporaries
-        Total         :     333
-            Global    :     116
-            Local     :     217
-        Regenerable   :      18
-        Spilled       :      32
-        
-    Routine stack
-        Variables     :       0 bytes*
-            Reads     :       0 [0.00e+00 ~ 0.0%]
-            Writes    :       0 [0.00e+00 ~ 0.0%]
-        Spills        :     208 bytes*
-            Reads     :      76 [3.31e+04 ~ 2.2%]
-            Writes    :      51 [1.41e+04 ~ 0.9%]
-    
-    Notes
-    
-        *Non-overlapping variables and spills may share stack space,
-         so the total stack size might be less than this.
-    
-
 ===========================================================================
 
 Begin optimization report for: writeResult(double *, const char *, int, int, int)
 
-    Report from: Interprocedural optimizations [ipo]
-
-INLINE REPORT: (writeResult(double *, const char *, int, int, int)) [5] ReadWrite.c(174,113)
+    Report from: Loop nest & Vector optimizations [loop, vec]
 
 
-    Report from: Loop nest, Vector & Auto-parallelization optimizations [loop, vec, par]
-
-
-LOOP BEGIN at ReadWrite.c(193,2)
+LOOP BEGIN at ReadWrite.c(190,2)
    remark #25399: memcopy generated
    remark #15542: loop was not vectorized: inner loop was already vectorized
 
-   LOOP BEGIN at ReadWrite.c(193,2)
+   LOOP BEGIN at ReadWrite.c(190,2)
    <Peeled loop for vectorization>
+      remark #25015: Estimate of max trip count of loop=1
    LOOP END
 
-   LOOP BEGIN at ReadWrite.c(193,2)
+   LOOP BEGIN at ReadWrite.c(190,2)
       remark #15300: LOOP WAS VECTORIZED
+      remark #15442: entire loop may be executed in remainder
+      remark #15448: unmasked aligned unit stride loads: 1 
+      remark #15449: unmasked aligned unit stride stores: 1 
+      remark #15475: --- begin vector cost summary ---
+      remark #15476: scalar cost: 5 
+      remark #15477: vector cost: 1.500 
+      remark #15478: estimated potential speedup: 3.290 
+      remark #15488: --- end vector cost summary ---
+      remark #25015: Estimate of max trip count of loop=6
    LOOP END
 
-   LOOP BEGIN at ReadWrite.c(193,2)
+   LOOP BEGIN at ReadWrite.c(190,2)
    <Alternate Alignment Vectorized Loop>
+      remark #25015: Estimate of max trip count of loop=6
    LOOP END
 
-   LOOP BEGIN at ReadWrite.c(193,2)
+   LOOP BEGIN at ReadWrite.c(190,2)
    <Remainder loop for vectorization>
+      remark #25015: Estimate of max trip count of loop=12
    LOOP END
 LOOP END
-
-    Report from: Code generation optimizations [cg]
-
-ReadWrite.c(193,2):remark #34026: call to memcpy implemented as a call to optimized library version
-ReadWrite.c(174,113):remark #34051: REGISTER ALLOCATION : [writeResult] ReadWrite.c:174
-
-    Hardware registers
-        Reserved     :    2[ rsp rip]
-        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
-        Callee-save  :    6[ rbx rbp r12-r15]
-        Assigned     :   14[ rax rdx rcx rbx rbp rsi rdi r8-r9 r12-r15 zmm0]
-        
-    Routine temporaries
-        Total         :      66
-            Global    :      22
-            Local     :      44
-        Regenerable   :       5
-        Spilled       :       8
-        
-    Routine stack
-        Variables     :       0 bytes*
-            Reads     :       0 [0.00e+00 ~ 0.0%]
-            Writes    :       0 [0.00e+00 ~ 0.0%]
-        Spills        :      16 bytes*
-            Reads     :       5 [2.70e+00 ~ 0.0%]
-            Writes    :       2 [2.00e+00 ~ 0.0%]
-    
-    Notes
-    
-        *Non-overlapping variables and spills may share stack space,
-         so the total stack size might be less than this.
-    
-
-===========================================================================
-
-Begin optimization report for: writeHeader(const char *, int, int, int)
-
-    Report from: Interprocedural optimizations [ipo]
-
-INLINE REPORT: (writeHeader(const char *, int, int, int)) [6] ReadWrite.c(202,75)
-
-
-    Report from: Code generation optimizations [cg]
-
-ReadWrite.c(202,75):remark #34051: REGISTER ALLOCATION : [writeHeader] ReadWrite.c:202
-
-    Hardware registers
-        Reserved     :    2[ rsp rip]
-        Available    :   39[ rax rdx rcx rbx rbp rsi rdi r8-r15 mm0-mm7 zmm0-zmm15]
-        Callee-save  :    6[ rbx rbp r12-r15]
-        Assigned     :    9[ rax rdx rcx rbx rbp rsi rdi r14-r15]
-        
-    Routine temporaries
-        Total         :      47
-            Global    :      11
-            Local     :      36
-        Regenerable   :      19
-        Spilled       :       4
-        
-    Routine stack
-        Variables     :       0 bytes*
-            Reads     :       0 [0.00e+00 ~ 0.0%]
-            Writes    :       0 [0.00e+00 ~ 0.0%]
-        Spills        :       0 bytes*
-            Reads     :       0 [0.00e+00 ~ 0.0%]
-            Writes    :       0 [0.00e+00 ~ 0.0%]
-    
-    Notes
-    
-        *Non-overlapping variables and spills may share stack space,
-         so the total stack size might be less than this.
-    
-
 ===========================================================================

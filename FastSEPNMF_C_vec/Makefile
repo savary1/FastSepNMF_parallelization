@@ -15,7 +15,7 @@ LIBRARIES := -lm
 #GCC_autovec
 #OPT := -O3 -march=native -ftree-vectorizer-verbose=6 -ffast-math -ftree-parallelize-loops=3
 #ICC_novec
-#OPT := -01 -restrict -no-vec
+#OPT := -O0 -restrict -no-vec
 #ICC_autovec
 OPT := -O3 -restrict -qopt-report-phase=vec,loop,openmp -qopt-report=3 -qopenmp
 
@@ -29,13 +29,13 @@ all: build
 build: FastSEPNMF
 
 ReadWrite.o: ReadWrite.c
-	$(CC) $(OPT) -o $@ -c $< -w
+	$(CC) $(OPT) -o $@ -c $< -w -g 
 
 FastSEPNMF.o: FastSEPNMF.c	
-	$(CC) $(OPT) -o $@ -c $< -w
+	$(CC) $(OPT) -o $@ -c $< -w -g 
 
 FastSEPNMF: FastSEPNMF.o ReadWrite.o
-	$(CC) $(OPT) -o $@ $+ $(LIBRARIES) 
+	$(CC) $(OPT) -o $@ $+ $(LIBRARIES) -g
 
 clean:
 	rm -f FastSEPNMF FastSEPNMF.o ReadWrite.o

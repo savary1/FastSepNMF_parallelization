@@ -20,7 +20,7 @@ int main (int argc, char* argv[]){
     int endmembers;
     int normalize;
     long int i, j, b_pos_size, d, k;
-    float max_val, a, b, faux;
+    float max_val, a, b, faux, faux2;
 
     if (argc != 5){
 		printf("******************************************************************\n");
@@ -51,16 +51,8 @@ int main (int argc, char* argv[]){
 	float *normM1 = (float *) malloc (image_size * sizeof(float));			//copy of normM
 	float *normMAux = (float *) malloc (image_size * sizeof(float));			//aux array to find the positions of (a-normM)/a <= 1e-6
 	long int *b_pos = (long int *) malloc (image_size * sizeof(long int));	   	//valid positions of normM that meet (a-normM)/a <= 1e-6
-	float *v = (float *) malloc (bands * sizeof(float));						//used to update normM in every iteration
-	float *fvAux;                                                           	//float auxiliary array 
+	float *v = (float *) malloc (bands * sizeof(float));						//used to update normM in every iteration                                                    	//float auxiliary array 
     long int J[endmembers];                                                 	//selected endmembers positions in input image
-
-	if(image_size > bands){
-		fvAux = (float *) malloc (image_size * sizeof(float));                
-	}
-	else{
-		fvAux = (float *) malloc (bands * sizeof(float));
-	}
 
     Load_Image(argv[1], image, cols, rows, bands, datatype);
 	/**************************** #END# - Load Image and allocate memory*******************************/
@@ -79,6 +71,7 @@ int main (int argc, char* argv[]){
 		for(k = 0; k < bands; k++){
         	normM[i] += image[i*bands + k] * image[i*bands + k]; 
 		}
+		normM1[i] = normM[i]; //if i == 1, normM1 = normM;
     }
 	gettimeofday(&t2,NULL);
 	t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
@@ -87,11 +80,7 @@ int main (int argc, char* argv[]){
 
 	/**************************** #END# - Normalize image****************************************/
 	max_val = max_Val(normM, image_size);
-    /**************************** #INIT# - FastSEPNMF algorithm****************************************/
-	//if i == 1, normM1 = normM; 
-	for(i = 0; i < image_size; i++){
-		normM1[i] = normM[i];
-	}
+    /**************************** #INIT# - FastSEPNMF algorithm****************************************/ 
 
 	i = 0;
 	//while i <= r && max(normM)/nM > 1e-9
@@ -137,17 +126,16 @@ int main (int argc, char* argv[]){
 			}
 			
 			//MIRAR SI LOS ACCESOS A MEMORIA SE PUEDEN HACER ADYACENTES
+			#pragma ivdep
 			for(k = 0; k < bands; k ++){
-				fvAux[k] = U[j*bands + k] * faux;
-			}
-			
-			for(k = 0; k < bands; k ++){//ESTE NO LO VECTORIZA Y CREO QUE SI SE PUEDE. INTENTAR HACER ACCESOS A MEMORIA ADYACENTES
-				U[i*bands + k] = U[i*bands + k] - fvAux[k];
+				faux2 = U[j*bands + k] * faux;
+				U[i*bands + k] = U[i*bands + k] - faux2;
 			}
 					
 		}
 		
 		//U(:,i) = U(:,i)/norm(U(:,i));
+		//v = U(:,i);
 		faux = 0;
 		for(j = 0; j < bands; j++){//INTENTAR HACER ACCESOS A MEMORIA ADYACENTES
 			faux += U[i*bands + j]*U[i*bands + j];
@@ -155,10 +143,6 @@ int main (int argc, char* argv[]){
 		faux = sqrt(faux);
 		for(j = 0; j < bands; j++){	//NO LO VECTORIZA, CREO QUE SI SE PUEDE. INTENTAR HACER ACCESOS A MEMORIA ADYACENTES
 			U[i*bands + j] = U[i*bands + j]/faux;
-		}
-		
-		//v = U(:,i);
-		for(j = 0; j < bands; j++){//INTENTAR HACER ACCESOS A MEMORIA ADYACENTES
 			v[j] = U[i*bands + j];
 		}
 
@@ -170,12 +154,10 @@ int main (int argc, char* argv[]){
 				faux += v[k] * U[j*bands + k];
 			}
 			//(v'*U(:,j))*U(:,j);//HACER ACCESOS A MEMORIA ADYACENTES
-			for(k = 0; k < bands; k ++){
-				fvAux[k] = U[j*bands + k] * faux;
-			}
 			//v = v - (v'*U(:,j))*U(:,j);
-			for(k = 0; k < bands; k ++){//DICE QUE NO LO HACE PORQUE PARECE INEFICIENTE
-				v[k] = v[k] - fvAux[k];
+			for(k = 0; k < bands; k ++){
+				faux2 = U[j*bands + k] * faux;
+				v[k] = v[k] - faux2;
 			}
 		}
 
@@ -188,8 +170,7 @@ int main (int argc, char* argv[]){
 			for(k = 0; k < bands; k++){//INTENTAR HACER ACCESOS ADYACENTES
 				faux += v[k] * image[j*bands + k];
 			}
-			fvAux[j] = faux * faux;
-			normM[j] -= fvAux[j];
+			normM[j] -= faux * faux;
 		}
 		gettimeofday(&t2,NULL);
 		t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
@@ -222,7 +203,6 @@ int main (int argc, char* argv[]){
 	free(normM1);
 	free(normMAux);
 	free(b_pos);
-	free(fvAux);
 	free(v);
 
     return 0;
@@ -257,27 +237,20 @@ float max_Val(float *vector, long int image_size){
 
 
 void normalize_img(float *image, long int image_size, int bands){
-    long int i, j, k;
-    long int row;
-
-    float *D = (float *) calloc (image_size, sizeof(float));               //aux array to normalize the input image
+    long int i, j;
+    long int row, pos;
+	float normVal;
 	
-	for (i = 0; i < image_size ; i++){
-        for(j = 0; j < bands; j++){
-            D[i] += image[i*bands + j]; 
-        } 
-    }
-
-    for(i = 0; i < image_size; i++){
-        //D[i] = powf(D[i] + 1.0e-16, -1);
-		D[i] = 1.0/(D[i] + 1.0e-16);
-    }
-
-	//Esto se puede hacer en un for de longitud Bands*imagesize
 	#pragma omp parallel for
-    for (i = 0; i < bands * image_size; i++){
-            image[i] = image[i] * D[i/bands];
+	for (i = 0; i < image_size ; i++){
+		row = i*bands;
+		normVal = 0;
+        for(j = 0; j < bands; j++){
+           normVal += image[row + j]; 
+        } 
+		normVal = 1.0/(normVal + 1.0e-16);
+		for(j = 0; j < bands; j++){
+			image[row + j] = image[row + j] * normVal;
+		}
     }
-
-    free(D);
 }

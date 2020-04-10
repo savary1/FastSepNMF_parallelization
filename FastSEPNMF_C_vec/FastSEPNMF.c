@@ -237,8 +237,7 @@ float max_Val(float *vector, long int image_size){
 
 
 void normalize_img(float *image, long int image_size, int bands){
-    long int i, j;
-    long int row, pos;
+    long int i, j, row;
 	float normVal;
 	
 	#pragma omp parallel for

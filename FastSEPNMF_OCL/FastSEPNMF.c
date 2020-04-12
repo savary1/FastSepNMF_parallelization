@@ -31,7 +31,7 @@ int main (int argc, char* argv[]){
     int rows, cols, bands; //size of the image
     int datatype, endmembers, normalize, deviceSelected;
     long int i, j, b_pos_size, d, k;
-    float max_val, a, b, faux;
+    float max_val, a, b, faux, faux2;
 
 	cl_int status;
 	cl_device_id selectedDevice;
@@ -84,17 +84,32 @@ int main (int argc, char* argv[]){
 
 
     int image_size = cols*rows;
-    float *image = (float *) malloc (image_size * bands * sizeof(float));    	//input image
-    float *U = (float *) malloc (bands * endmembers * sizeof(float));       	//selected endmembers
-    float *normM = (float *) calloc (image_size, sizeof(float));            	//normalized image
-	float *normM1 = (float *) malloc (image_size * sizeof(float));				//copy of normM
-	float *normMAux = (float *) malloc (image_size * sizeof(float));			//aux array to find the positions of (a-normM)/a <= 1e-6
-	long int *b_pos1 = (long int *) malloc (image_size * sizeof(long int));	   	//valid positions of normM that meet (a-normM)/a <= 1e-6
-	float *v = (float *) malloc (bands * sizeof(float));						//used to update normM in every iteration
-	float *fvAux;                                                           	//float auxiliary array 
+
+	#define PADDING 16
+	int padded_image_size = (image_size)+((PADDING-image_size%PADDING)%PADDING);
+	int padded_bands = (bands)+((PADDING-bands%PADDING)%PADDING);
+	int padded_endmembers = (endmembers)+((PADDING-endmembers%PADDING)%PADDING);
+	
+
+    // float *image = (float *) malloc (image_size * bands * sizeof(float));    	//input image
+    // float *U = (float *) malloc (bands * endmembers * sizeof(float));       	//selected endmembers
+    // float *normM = (float *) calloc (image_size, sizeof(float));            	//normalized image
+	// float *normM1 = (float *) malloc (image_size * sizeof(float));				//copy of normM
+	// float *normMAux = (float *) malloc (image_size * sizeof(float));			//aux array to find the positions of (a-normM)/a <= 1e-6
+	// long int *b_pos = (long int *) malloc (image_size * sizeof(long int));	   	//valid positions of normM that meet (a-normM)/a <= 1e-6
+	// float *v = (float *) malloc (bands * sizeof(float));						//used to update normM in every iteration
     long int J[endmembers];                                                 	//selected endmembers positions in input image
 
-	size_t localSize = 512;
+	float *image = (float *) _mm_malloc (padded_image_size*padded_bands*sizeof(float),16);
+	float *U = (float *) _mm_malloc (padded_bands * padded_endmembers * sizeof(float), 16);
+	float *normM = (float *) _mm_malloc (padded_image_size * sizeof(float), 16);
+	memset(normM,0,padded_image_size*sizeof(float));
+	float *normM1 = (float *) _mm_malloc (padded_image_size * sizeof(float), 16);
+	float *normMAux = (float *) _mm_malloc (padded_image_size * sizeof(float), 16);
+	long int *b_pos = (long int *) _mm_malloc (padded_image_size * sizeof(long int), 16);
+	float *v = (float *) _mm_malloc (padded_bands * sizeof(float), 16);
+
+	size_t localSize = 1024;
 	size_t globalsize = ceil(image_size/(float)localSize) * localSize;
 
 	clImage = clCreateBuffer(clContext, CL_MEM_READ_ONLY, image_size * bands * sizeof(float), NULL, &status);
@@ -103,15 +118,6 @@ int main (int argc, char* argv[]){
 	exit_if_OpenCL_fail(status, "Error creating clNorm buffer on device");
 	clV = clCreateBuffer(clContext, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, bands * sizeof(float), v, &status);
 	exit_if_OpenCL_fail(status, "Error creating clV buffer on device");
-
-
-
-	if(image_size > bands){
-		fvAux = (float *) malloc (image_size * sizeof(float));                
-	}
-	else{
-		fvAux = (float *) malloc (bands * sizeof(float));
-	}
 
     Load_Image(argv[1], image, cols, rows, bands, datatype);
 
@@ -163,9 +169,13 @@ int main (int argc, char* argv[]){
 
 	i = 0;
 	//while i <= r && max(normM)/nM > 1e-9
-	while(i < endmembers && max_Val(normM, image_size)/max_val > 1e-9 ){
+	while(i < endmembers){
 		//[a,b] = max(normM);
 		a = max_Val(normM, image_size);
+
+		if(a/max_val <= 1e-9){
+			break;
+		}
 
 		//(a-normM)/a
 		for(j = 0; j < image_size; j++){
@@ -176,19 +186,19 @@ int main (int argc, char* argv[]){
 		b_pos_size = 0;
 		for(j = 0; j < image_size; j++){
 			if (normMAux[j]<= 1.0e-6){
-				b_pos1[b_pos_size] = j;
+				b_pos[b_pos_size] = j;
 				b_pos_size++;
 			}
 		}
 		
 		//if length(b) > 1, [c,d] = max(normM1(b)); b = b(d);
 		if (b_pos_size > 1){
-			d = max_val_extract_array(normM1, b_pos1, b_pos_size);
-			b = b_pos1[d];
+			d = max_val_extract_array(normM1, b_pos, b_pos_size);
+			b = b_pos[d];
 			J[i] = b;
 		}
 		else{ // comprobar si siempre tiene valores b_pos
-			J[i] = b_pos1[0];
+			J[i] = b_pos[0];
 		}
 		
 		//U(:,i) = M(:,b);  //MIRAR SI SE PUEDEN HACER LOS ACCESOS A MEMORIA ADYACENTES
@@ -205,17 +215,15 @@ int main (int argc, char* argv[]){
 			}
 			
 			//MIRAR SI LOS ACCESOS A MEMORIA SE PUEDEN HACER ADYACENTES
+			#pragma ivdep
 			for(k = 0; k < bands; k ++){
-				fvAux[k] = U[j*bands + k] * faux;
-			}
-			
-			for(k = 0; k < bands; k ++){//ESTE NO LO VECTORIZA Y CREO QUE SI SE PUEDE. INTENTAR HACER ACCESOS A MEMORIA ADYACENTES
-				U[i*bands + k] = U[i*bands + k] - fvAux[k];
-			}
-					
+				faux2 = U[j*bands + k] * faux;
+				U[i*bands + k] = U[i*bands + k] - faux2;
+			}		
 		}
 		
 		//U(:,i) = U(:,i)/norm(U(:,i));
+		//v = U(:,i);
 		faux = 0;
 		for(j = 0; j < bands; j++){//INTENTAR HACER ACCESOS A MEMORIA ADYACENTES
 			faux += U[i*bands + j]*U[i*bands + j];
@@ -223,10 +231,6 @@ int main (int argc, char* argv[]){
 		faux = sqrt(faux);
 		for(j = 0; j < bands; j++){	//NO LO VECTORIZA, CREO QUE SI SE PUEDE. INTENTAR HACER ACCESOS A MEMORIA ADYACENTES
 			U[i*bands + j] = U[i*bands + j]/faux;
-		}
-		
-		//v = U(:,i);
-		for(j = 0; j < bands; j++){//INTENTAR HACER ACCESOS A MEMORIA ADYACENTES
 			v[j] = U[i*bands + j];
 		}
 
@@ -238,37 +242,15 @@ int main (int argc, char* argv[]){
 				faux += v[k] * U[j*bands + k];
 			}
 			//(v'*U(:,j))*U(:,j);//HACER ACCESOS A MEMORIA ADYACENTES
-			for(k = 0; k < bands; k ++){
-				fvAux[k] = U[j*bands + k] * faux;
-			}
 			//v = v - (v'*U(:,j))*U(:,j);
-			for(k = 0; k < bands; k ++){//DICE QUE NO LO HACE PORQUE PARECE INEFICIENTE
-				v[k] = v[k] - fvAux[k];
+			for(k = 0; k < bands; k ++){
+				faux2 = U[j*bands + k] * faux;
+				v[k] = v[k] - faux2;
 			}
 		}
-
-		//(v'*M).^2
-		//normM = normM - (v'*M).^2;
-		
-		// #pragma omp parallel for
-		// for(j = 0; j < image_size; j++){
-		// 	faux = 0;
-		// 	for(k = 0; k < bands; k++){//INTENTAR HACER ACCESOS ADYACENTES
-		// 		faux += v[k] * image[j*bands + k];
-		// 	}
-		// 	fvAux[j] = faux * faux;
-		// 	normM[j] -= fvAux[j];
-		// }
 		
 		status = clEnqueueWriteBuffer(clQueue, clV, CL_TRUE, 0, bands * sizeof(float), v, 0, NULL, NULL);
 		exit_if_OpenCL_fail(status, "Error copying v to the device");
-
-		// status  = clSetKernelArg(updateNormMKernel, 1, sizeof(cl_mem), &clV);
-		// exit_if_OpenCL_fail(status, "Error setting v as parameter in the device");
-		// status  = clSetKernelArg(updateNormMKernel, 2, sizeof(cl_mem), &clNormM);
-		// exit_if_OpenCL_fail(status, "Error setting normM as parameter in the device");
-		// status = clSetKernelArg(updateNormMKernel, 3, sizeof(long int), &bands);
-		// exit_if_OpenCL_fail(status, "Error setting bands as parameter in the device");
 
 		gettimeofday(&t1,NULL);
 		printf("Ejecutando kernel - %d\n", i);
@@ -313,14 +295,13 @@ int main (int argc, char* argv[]){
 	clReleaseContext(clContext);
    	clReleaseCommandQueue(clQueue);
 
-    free(image);
-    free(U);
-    free(normM);
-	free(normM1);
-	free(normMAux);
-	free(b_pos1);
-	free(fvAux);
-	free(v);
+    _mm_free(image);
+    _mm_free(U);
+    _mm_free(normM);
+	_mm_free(normM1);
+	_mm_free(normMAux);
+	_mm_free(b_pos);
+	_mm_free(v);
 
     return 0;
 }
@@ -358,29 +339,21 @@ float max_Val(float *vector, long int image_size){
 
 
 void normalize_img(float *image, long int image_size, int bands){
-    long int i, j, k;
-    long int row;
-
-    float *D = (float *) calloc (image_size, sizeof(float));               //aux array to normalize the input image
+    long int i, j, row;
+	float normVal;
 	
-	for (i = 0; i < image_size ; i++){
-        for(j = 0; j < bands; j++){
-            D[i] += image[i*bands + j]; 
-        } 
-    }
-
-    for(i = 0; i < image_size; i++){
-        //D[i] = powf(D[i] + 1.0e-16, -1);
-		D[i] = 1.0/(D[i] + 1.0e-16);
-    }
-
-	//Esto se puede hacer en un for de longitud Bands*imagesize
 	#pragma omp parallel for
-    for (i = 0; i < bands * image_size; i++){
-            image[i] = image[i] * D[i/bands];
+	for (i = 0; i < image_size ; i++){
+		row = i*bands;
+		normVal = 0;
+        for(j = 0; j < bands; j++){
+           normVal += image[row + j]; 
+        } 
+		normVal = 1.0/(normVal + 1.0e-16);
+		for(j = 0; j < bands; j++){
+			image[row + j] = image[row + j] * normVal;
+		}
     }
-
-    free(D);
 }
 
 

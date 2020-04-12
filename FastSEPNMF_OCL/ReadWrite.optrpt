@@ -4,7 +4,7 @@ See "https://software.intel.com/en-us/intel-advisor-xe" for details.
 
 Intel(R) C Intel(R) 64 Compiler for applications running on Intel(R) 64, Version 18.0.1.163 Build 20171018
 
-Compiler options: -O3 -restrict -qopt-report-phase=vec,loop,openmp -qopt-report=3 -qopenmp -L/optshared/cuda/lib64 -o ReadWrite.o -c -w
+Compiler options: -O3 -restrict -qopt-report-phase=vec,loop,openmp -qopt-report=3 -qopenmp -L/optshared/cuda/lib64 -o ReadWrite.o -c -w -g
 
 Begin optimization report for: cleanString(char *, char *)
 

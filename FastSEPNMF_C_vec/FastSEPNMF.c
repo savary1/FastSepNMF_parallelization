@@ -84,9 +84,13 @@ int main (int argc, char* argv[]){
 
 	i = 0;
 	//while i <= r && max(normM)/nM > 1e-9
-	while(i < endmembers && max_Val(normM, image_size)/max_val > 1e-9 ){
+	while(i < endmembers){
 		//[a,b] = max(normM);
 		a = max_Val(normM, image_size);
+
+		if(a/max_val <= 1e-9){
+			break;
+		}
 
 		//(a-normM)/a
 		for(j = 0; j < image_size; j++){

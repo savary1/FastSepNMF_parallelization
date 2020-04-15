@@ -108,6 +108,7 @@ void Load_Image(char* filename, float *imageVector, int cols, int rows, int numB
 								value=(float)tipo_short_int[h];
 								if(value<0){
 									imageVector[numBands*(h%lines_samples) + i]=0.0;
+
 								}else{
 									imageVector[numBands*(h%lines_samples) + i]=value;
 								}
@@ -162,6 +163,81 @@ void Load_Image(char* filename, float *imageVector, int cols, int rows, int numB
 	fclose(fp);
 }
 
+void Load_Image_IIR(char* filename, float *imageVector, int lines_samples, int numBands, int dataType){
+
+	FILE *fp;
+    	short int *tipo_short_int;
+    	double *tipo_double;
+    	float *tipo_float, value;
+    	int i,j;
+   
+    	// open file "filename" only read
+    	if ((fp=fopen(filename,"r"))==NULL){
+    		printf("file not found");
+        	exit(1);
+    	}
+    	else{
+        	fseek(fp,0L,SEEK_SET);
+        	//describe datatype inside the image and cast the datatype into float. Thus, the result image will have float datatype inside.
+        	switch(dataType)
+        	{
+	    		//short int datatype 
+            		case 2:
+                		tipo_short_int = (short int *) malloc (lines_samples*numBands * sizeof(short int));
+                		fread(tipo_short_int,1,(sizeof(short int)*lines_samples*numBands),fp);
+                		//Convert image data datatype to float
+				for(j=0; j< numBands; j+=1){
+					for(i=0; i< lines_samples; i+=1){
+						//if(j<bandsPAD){
+							value=(float)tipo_short_int[i+j*lines_samples];
+							if(value>0)
+                    						imageVector[i+j*lines_samples]=value;//imageVector[i+j*sampleslinesPAD]=value;
+							else
+								imageVector[i+j*lines_samples]=0.0;//imageVector[i+j*sampleslinesPAD]=0.0;
+						//}
+					}
+				}
+		                free(tipo_short_int);
+                		break;
+   	    		//float datatype
+            		case 4:
+				tipo_float = (float *) malloc (lines_samples*numBands * sizeof(float));
+                		fread(tipo_float,1,(sizeof(float)*lines_samples*numBands),fp);
+				for(j=0; j< numBands; j+=1){
+					for(i=0; i< lines_samples; i+=1){
+						//if(j<bandsPAD){
+							value=tipo_float[i+j*lines_samples];
+							if(value>0)
+								imageVector[i+j*lines_samples]=value;
+							else
+								imageVector[i+j*lines_samples]=0.0;
+						//}
+					}
+				}
+                		free(tipo_float);
+               			break;
+			//double datatype
+            		case 5:
+				tipo_double = (double *) malloc (lines_samples*numBands * sizeof(double));
+                		fread(tipo_double,1,(sizeof(double)*lines_samples*numBands),fp);
+				for(j=0; j< numBands; j+=1){
+					for(i=0; i< lines_samples; i+=1){                			
+						//if(j<bandsPAD){
+							value=(float)tipo_double[i+j*lines_samples];
+							if(value>0)
+                						imageVector[i+j*lines_samples]=value;
+							else
+								imageVector[i+j*lines_samples]=0.0;
+						//}					
+					}
+				}
+                		free (tipo_double);
+                		break;
+        	}
+    	}
+    	//close the file 
+    	fclose(fp);
+}
 
 /*
   Write the image "imagen" into a new image file "resultado_filename" with number of samples "num_samples", number of lines "num_lines" 

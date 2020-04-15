@@ -137,8 +137,8 @@ int main (int argc, char* argv[]){
 		exit_if_OpenCL_fail(status, "Error executing kernel");
 		clFinish(clQueue);
 
-		status = clEnqueueReadBuffer(clQueue, clImageHost, CL_TRUE, 0, image_size * bands * sizeof(float), image, 0, NULL, NULL);
-		exit_if_OpenCL_fail(status, "Error reading normM from the device");
+		// status = clEnqueueReadBuffer(clQueue, clImageHost, CL_TRUE, 0, image_size * bands * sizeof(float), image, 0, NULL, NULL);
+		// exit_if_OpenCL_fail(status, "Error reading normM from the device");
 		status = clEnqueueReadBuffer(clQueue, clNormM, CL_TRUE, 0, image_size * sizeof(float), normM, 0, NULL, NULL);
 		exit_if_OpenCL_fail(status, "Error reading normM from the device");
 		clFinish(clQueue);
@@ -216,8 +216,8 @@ int main (int argc, char* argv[]){
 		
 		//U(:,i) = M(:,b);  //MIRAR SI SE PUEDEN HACER LOS ACCESOS A MEMORIA ADYACENTES
 		for(j = 0 ; j < bands; j++){
-			U[i*bands + j] = image[J[i] * bands + j];
-			//U[i*bands + j] = image[image_size*j + J[i]];
+			//U[i*bands + j] = image[J[i] * bands + j];
+			U[i*bands + j] = image[image_size*j + J[i]];
 		}
 		
 		//U(:,i) = U(:,i) - U(:,j)*(U(:,j)'*U(:,i));
@@ -263,23 +263,24 @@ int main (int argc, char* argv[]){
 			}
 		}
 
+		gettimeofday(&t1,NULL);
 		
 		status = clEnqueueWriteBuffer(clQueue, clV, CL_TRUE, 0, bands * sizeof(float), v, 0, NULL, NULL);
 		exit_if_OpenCL_fail(status, "Error copying v to the device");
 
-		gettimeofday(&t1,NULL);
 		printf("Ejecutando kernel - %d\n", i);
 		status = clEnqueueNDRangeKernel(clQueue, updateNormMKernel, 1, NULL, &globalsize, &localSize, 0, NULL, NULL);
 		exit_if_OpenCL_fail(status, "Error executing kernel");
 		clFinish(clQueue);
-		gettimeofday(&t2,NULL);
-		t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
-		t_usec = (float)  (t2.tv_usec - t1.tv_usec);
-		tCostSquare = tCostSquare + t_sec + t_usec/1.0e+6;
 
 		status = clEnqueueReadBuffer(clQueue, clNormM, CL_TRUE, 0, image_size * sizeof(float), normM, 0, NULL, NULL);
 		exit_if_OpenCL_fail(status, "Error reading normM from the device");
 		clFinish(clQueue);
+
+		gettimeofday(&t2,NULL);
+		t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
+		t_usec = (float)  (t2.tv_usec - t1.tv_usec);
+		tCostSquare = tCostSquare + t_sec + t_usec/1.0e+6;
 
 		
 			

@@ -118,7 +118,7 @@ LOOP BEGIN at ReadWrite.c(145,6)
 LOOP END
 ===========================================================================
 
-Begin optimization report for: Load_Image_IIR(char *, float *, int, int, int)
+Begin optimization report for: Load_Image_IIR(char *, float *, int, int, int, int)
 
     Report from: Loop nest & Vector optimizations [loop, vec]
 

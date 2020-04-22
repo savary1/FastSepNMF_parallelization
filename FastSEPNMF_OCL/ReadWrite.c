@@ -108,7 +108,6 @@ void Load_Image(char* filename, float *imageVector, int cols, int rows, int numB
 								value=(float)tipo_short_int[h];
 								if(value<0){
 									imageVector[numBands*(h%lines_samples) + i]=0.0;
-
 								}else{
 									imageVector[numBands*(h%lines_samples) + i]=value;
 								}
@@ -120,6 +119,7 @@ void Load_Image(char* filename, float *imageVector, int cols, int rows, int numB
 					break;
 			//float datatype
 				case 4:
+					printf("Leyendo tipo float\n");
 					tipo_float = (float *) malloc (lines_samples*numBands * sizeof(float));
 					fread(tipo_float,1,(sizeof(float)*lines_samples*numBands),fp);
 					#pragma loop count min(1024)
@@ -139,6 +139,7 @@ void Load_Image(char* filename, float *imageVector, int cols, int rows, int numB
 					break;
 		//double datatype
 				case 5:
+					printf("Leyendo tipo double\n");
 					tipo_double = (double *) malloc (lines_samples*numBands * sizeof(double));
 					fread(tipo_double,1,(sizeof(double)*lines_samples*numBands),fp);
 					#pragma loop count min(1024)
@@ -238,6 +239,7 @@ void Load_Image_IIR(char* filename, float *imageVector, int lines_samples, int n
     	//close the file 
     	fclose(fp);
 }
+
 
 /*
   Write the image "imagen" into a new image file "resultado_filename" with number of samples "num_samples", number of lines "num_lines" 

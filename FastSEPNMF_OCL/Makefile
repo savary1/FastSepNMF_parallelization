@@ -29,13 +29,13 @@ all: build
 build: FastSEPNMF
 
 ReadWrite.o: ReadWrite.c
-	$(CC) $(OPT) $(CL_LDFLAGS) -o $@ -c $< -w
+	$(CC) $(CL_CFLAGS) $(CL_LDFLAGS) $(OPT) -o $@ -c $< -w
 
 FastSEPNMF.o: FastSEPNMF.c	
-	$(CC) $(OPT) $(CL_LDFLAGS) -o $@ -c $< -w
+	$(CC) $(CL_CFLAGS) $(CL_LDFLAGS) $(OPT) -o $@ -c $< -w
 
 FastSEPNMF: FastSEPNMF.o ReadWrite.o
-	$(CC) $(OPT) $(CL_LDFLAGS) -o $@ $+ $(LIBRARIES)
+	$(CC) $(CL_CFLAGS) $(CL_LDFLAGS) $(OPT) -o $@ $+ $(LIBRARIES)
 
 clean:
 	rm -f FastSEPNMF FastSEPNMF.o ReadWrite.o

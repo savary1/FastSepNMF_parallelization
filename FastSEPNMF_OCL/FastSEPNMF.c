@@ -8,29 +8,22 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <stdlib.h>
 #include <sys/time.h>
 #include "ReadWrite.h"
 
-#pragma OPENCL EXTENSION cl_nv_pragma_unroll : enable
-
-
-
 void normalize_img(float *image, long int image_size, int bands);
-void normalize_img_IIR(float *image_device, long int image_size, int bands);
 long int max_val_extract_array(float *normMAux, long int *b_pos, long int b_pos_size);
 float max_Val(float *vector, long int image_size);
-void exit_if_OpenCL_fail(cl_int code, char* msg);
-cl_device_id select_device();
-cl_program build_kernels(cl_context clContext, cl_device_id selectedDevice);
-
-
 
 int main (int argc, char* argv[]){
 
 	struct timeval t0, tfin, t1, t2;
 	float secsFin, t_sec, t_usec, tNorm, tCostSquare;
     int rows, cols, bands; //size of the image
-    int datatype, endmembers, normalize, deviceSelected;
+    int datatype;
+    int endmembers;
+    int normalize;
     long int i, j, b_pos_size, d, k;
     float max_val, a, b, faux, faux2;
 
@@ -39,15 +32,14 @@ int main (int argc, char* argv[]){
 	cl_context clContext;
 	cl_command_queue clQueue;
 	cl_program clProgram;
-	cl_kernel updateNormMKernel, normalizeImgKernel;
-	cl_mem clImage, clV, clNormM, clImageHost;
-	
+	cl_kernel updateNormMKernel;
+	cl_mem clImage, clV, clNormM;
 
     if (argc != 5){
 		printf("******************************************************************\n");
 		printf("	ERROR in the input parameters:\n");
 		printf("	The correct sintax is:\n");
-		printf("	./atdca_serie image.bsq image.hdr numEndmembers normalize        \n");
+		printf("	./atdca_serie image.bsq image.hdr numEndmembers normalize          \n");
 		printf("******************************************************************\n");
 		return(0);
 	}
@@ -57,6 +49,7 @@ int main (int argc, char* argv[]){
         normalize = atoi(argv[4]);
 	}
 
+	secsFin = t_sec = t_usec = tNorm = tCostSquare = 0;
 
 	/************************************* #INIT# - OpenCL init****************************************/
 	
@@ -76,97 +69,72 @@ int main (int argc, char* argv[]){
 	/************************************* #END# - OpenCL init****************************************/
 
 
-	secsFin = t_sec = t_usec = tNorm = tCostSquare = 0;
-
     /**************************** #INIT# - Load Image and allocate memory******************************/
     //reading image header
   	readHeader(argv[2], &cols, &rows, &bands, &datatype);
     printf("\nLines = %d  Samples = %d  Nbands = %d  Data_type = %d\n", rows, cols, bands, datatype);
-	
-	int image_size = cols*rows;
-    float *image = (float *) malloc (image_size * bands * sizeof(float));    	//input image
+
+
+    long int image_size = cols*rows;
+    float *image = (float *) calloc (image_size * bands, sizeof(float));    	//input image
     float *U = (float *) malloc (bands * endmembers * sizeof(float));       	//selected endmembers
     float *normM = (float *) calloc (image_size, sizeof(float));            	//normalized image
-	float *normM1 = (float *) malloc (image_size * sizeof(float));				//copy of normM
+	float *normM1 = (float *) malloc (image_size * sizeof(float));			//copy of normM
 	float *normMAux = (float *) malloc (image_size * sizeof(float));			//aux array to find the positions of (a-normM)/a <= 1e-6
 	long int *b_pos = (long int *) malloc (image_size * sizeof(long int));	   	//valid positions of normM that meet (a-normM)/a <= 1e-6
-	float *v = (float *) malloc (bands * sizeof(float));						//used to update normM in every iteration
+	float *v = (float *) malloc (bands * sizeof(float));						//used to update normM in every iteration                                                    	//float auxiliary array 
     long int J[endmembers];                                                 	//selected endmembers positions in input image
 
-	Load_Image_IIR(argv[1], image, image_size, bands, datatype);
+    Load_Image_IIR(argv[1], image, image_size, bands, datatype);
 
 	size_t localSize = 1024;
 	size_t globalsize = ceil(image_size/(float)localSize) * localSize;
 
 	clImage = clCreateBuffer(clContext, CL_MEM_READ_WRITE, image_size * bands * sizeof(float), NULL, &status);
 	exit_if_OpenCL_fail(status, "Error creating clImage buffer on device");
-	clImageHost = clCreateBuffer(clContext, CL_MEM_WRITE_ONLY, image_size * bands * sizeof(float), NULL, &status);
-	exit_if_OpenCL_fail(status, "Error creating clImageHost buffer on device");
 	clNormM = clCreateBuffer(clContext, CL_MEM_WRITE_ONLY, image_size * sizeof(float), NULL, &status);
 	exit_if_OpenCL_fail(status, "Error creating clNorm buffer on device");
-	clV = clCreateBuffer(clContext, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, bands * sizeof(float), v, &status);
+	clV = clCreateBuffer(clContext, CL_MEM_READ_ONLY, bands * sizeof(float), v, &status);
 	exit_if_OpenCL_fail(status, "Error creating clV buffer on device");
-
-	
-
 	/**************************** #END# - Load Image and allocate memory*******************************/
 
 	gettimeofday(&t0,NULL);
-
-    /**************************** #INIT# - Normalize image****************************************/
-	status = clEnqueueWriteBuffer(clQueue, clImage, CL_TRUE, 0, image_size * bands * sizeof(float), image, 0, NULL, NULL);
-	exit_if_OpenCL_fail(status, "Error copying the image to the device");
-
-	gettimeofday(&t1,NULL);
-    if (normalize == 1){
-        normalizeImgKernel = clCreateKernel(clProgram, "normalize_img", &status);
-		exit_if_OpenCL_fail(status, "Error creating normalize_img kernel");
-
-		status  = clSetKernelArg(normalizeImgKernel, 0, sizeof(cl_mem), &clImage);
-		exit_if_OpenCL_fail(status, "Error setting image as parameter in the device");
-		status  = clSetKernelArg(normalizeImgKernel, 1, sizeof(cl_mem), &clImageHost);
-		exit_if_OpenCL_fail(status, "Error setting imageHost as parameter in the device");
-		status  = clSetKernelArg(normalizeImgKernel, 2, sizeof(cl_mem), &clNormM);
-		exit_if_OpenCL_fail(status, "Error setting normM as parameter in the device");
-		status  = clSetKernelArg(normalizeImgKernel, 3, sizeof(int), &image_size);
-		exit_if_OpenCL_fail(status, "Error setting image_size as parameter in the device");
-		status  = clSetKernelArg(normalizeImgKernel, 4, sizeof(int), &bands);
-		exit_if_OpenCL_fail(status, "Error setting bands as parameter in the device");
-
-		status = clEnqueueNDRangeKernel(clQueue, normalizeImgKernel, 1, NULL, &globalsize, &localSize, 0, NULL, NULL);
-		exit_if_OpenCL_fail(status, "Error executing kernel");
-		clFinish(clQueue);
-
-		// status = clEnqueueReadBuffer(clQueue, clImageHost, CL_TRUE, 0, image_size * bands * sizeof(float), image, 0, NULL, NULL);
-		// exit_if_OpenCL_fail(status, "Error reading normM from the device");
-		status = clEnqueueReadBuffer(clQueue, clNormM, CL_TRUE, 0, image_size * sizeof(float), normM, 0, NULL, NULL);
-		exit_if_OpenCL_fail(status, "Error reading normM from the device");
-		clFinish(clQueue);
-    }
-	else{
-		//Este for se puede separa en 2, el de fuera de longitud image size y el de dentro vectorizarlo
-		#pragma omp parallel for
-		for(i = 0; i < image_size; i++){
-			for(k = 0; k < bands; k++){
-				normM[i] += image[i*bands + k] * image[i*bands + k]; 
-			}
-		}
+	printf("\n\nFirst 100 image:\n");
+	for(j = 0; j < 100; j++){
+		printf("%.12f, ", image[j * image_size]);
 	}
 
-	
+    /**************************** #INIT# - Normalize image****************************************/
+	gettimeofday(&t1,NULL);
+    if (normalize == 1){
+        normalize_img(image, image_size, bands);   
+    }
+
+	printf("\n\nFirst 100 image norm:\n");
+	for(j = 0; j < 100; j++){
+		printf("%.12f, ", image[j * image_size]);
+	}
+
+	//Este for se puede separa en 2, el de fuera de longitud image size y el de dentro vectorizarlo
+	for(i = 0; i < image_size; i++){
+		for(k = 0; k < bands; k++){
+        	normM[i] += image[k*image_size + i] * image[k*image_size + i]; 
+		}
+		normM1[i] = normM[i]; //if i == 1, normM1 = normM;
+    }
+	printf("\n\nFirst 100 normM:\n");
+	for(j = 0; j < 100; j++){
+		printf("%.12f, ", normM[j]);
+	}
 	gettimeofday(&t2,NULL);
 	t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
   	t_usec = (float)  (t2.tv_usec - t1.tv_usec);
 	tNorm = t_sec + t_usec/1.0e+6;
 
-	/**************************** #END# - Normalize image****************************************/
-	max_val = max_Val(normM, image_size);
-    /**************************** #INIT# - FastSEPNMF algorithm****************************************/
-	//if i == 1, normM1 = normM; 
-	for(i = 0; i < image_size; i++){
-		normM1[i] = normM[i];
-	}
-	
+	status = clEnqueueWriteBuffer(clQueue, clImage, CL_TRUE, 0, image_size * bands * sizeof(float), image, 0, NULL, NULL);
+	exit_if_OpenCL_fail(status, "Error copying the image to the device");
+	status = clEnqueueWriteBuffer(clQueue, clNormM, CL_TRUE, 0, image_size * sizeof(float), normM, 0, NULL, NULL);
+	exit_if_OpenCL_fail(status, "Error copying the image to the device");
 
 	status  = clSetKernelArg(updateNormMKernel, 0, sizeof(cl_mem), &clImage);
 	exit_if_OpenCL_fail(status, "Error setting image as parameter in the device");
@@ -178,7 +146,10 @@ int main (int argc, char* argv[]){
 	exit_if_OpenCL_fail(status, "Error setting bands as parameter in the device");
 	status = clSetKernelArg(updateNormMKernel, 4, sizeof(int), &image_size);
 	exit_if_OpenCL_fail(status, "Error setting image_size as parameter in the device");
-	
+
+	/**************************** #END# - Normalize image****************************************/
+	max_val = max_Val(normM, image_size);
+    /**************************** #INIT# - FastSEPNMF algorithm****************************************/ 
 
 	i = 0;
 	//while i <= r && max(normM)/nM > 1e-9
@@ -216,8 +187,7 @@ int main (int argc, char* argv[]){
 		
 		//U(:,i) = M(:,b);  //MIRAR SI SE PUEDEN HACER LOS ACCESOS A MEMORIA ADYACENTES
 		for(j = 0 ; j < bands; j++){
-			//U[i*bands + j] = image[J[i] * bands + j];
-			U[i*bands + j] = image[image_size*j + J[i]];
+			U[i*bands + j] = image[J[i] + image_size * j];
 		}
 		
 		//U(:,i) = U(:,i) - U(:,j)*(U(:,j)'*U(:,i));
@@ -233,7 +203,8 @@ int main (int argc, char* argv[]){
 			for(k = 0; k < bands; k ++){
 				faux2 = U[j*bands + k] * faux;
 				U[i*bands + k] = U[i*bands + k] - faux2;
-			}		
+			}
+					
 		}
 		
 		//U(:,i) = U(:,i)/norm(U(:,i));
@@ -263,8 +234,9 @@ int main (int argc, char* argv[]){
 			}
 		}
 
+		//(v'*M).^2
+		//normM = normM - (v'*M).^2;
 		gettimeofday(&t1,NULL);
-		
 		status = clEnqueueWriteBuffer(clQueue, clV, CL_TRUE, 0, bands * sizeof(float), v, 0, NULL, NULL);
 		exit_if_OpenCL_fail(status, "Error copying v to the device");
 
@@ -281,8 +253,6 @@ int main (int argc, char* argv[]){
 		t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
 		t_usec = (float)  (t2.tv_usec - t1.tv_usec);
 		tCostSquare = tCostSquare + t_sec + t_usec/1.0e+6;
-
-		
 			
 		i = i + 1;
 		
@@ -295,13 +265,14 @@ int main (int argc, char* argv[]){
 	secsFin = t_sec + t_usec/1.0e+6;
 
 	printf("Endmembers:\n");
-    for(i = 0; i < endmembers; i++){
-		printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld) \t- Valor: %f\n", i, J[i],(J[i] / cols),(J[i] % cols), normM1[J[i]]);
+    for(j = 0; j < i; j++){
+		printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld) \t- Valor: %f\n", j, J[j],(J[j] / cols),(J[j] % cols), normM1[J[j]]);
     }
 
 	printf("Total time:	\t%.5f segundos\n", secsFin);
 	printf("T norm:	\t\t%.5f segundos\n", tNorm);
 	printf("T square loop:	\t%.5f segundos\n", tCostSquare);
+
 
 	clReleaseMemObject(clImage);
    	clReleaseMemObject(clNormM);
@@ -311,6 +282,7 @@ int main (int argc, char* argv[]){
 	clReleaseContext(clContext);
    	clReleaseCommandQueue(clQueue);
 
+    
     free(image);
     free(U);
     free(normM);
@@ -321,8 +293,6 @@ int main (int argc, char* argv[]){
 
     return 0;
 }
-
-
 
 long int max_val_extract_array(float *normMAux, long int *b_pos, long int b_pos_size){
 	float max_val = -1;
@@ -338,7 +308,6 @@ long int max_val_extract_array(float *normMAux, long int *b_pos, long int b_pos_
 }
 
 
-
 float max_Val(float *vector, long int image_size){
 	float max_val = -1;
 	long int i;
@@ -350,6 +319,23 @@ float max_Val(float *vector, long int image_size){
     }
 
 	return max_val;
+}
+
+
+void normalize_img(float *image, long int image_size, int bands){
+    long int i, j;
+	float normVal;
+	
+	for (i = 0; i < image_size ; i++){
+		normVal = 0;
+        for(j = 0; j < bands; j++){
+           normVal += image[j*image_size + i]; 
+        } 
+		normVal = 1.0/(normVal + 1.0e-16);
+		for(j = 0; j < bands; j++){
+			image[j*image_size + i] = image[j*image_size + i] * normVal;
+		}
+    }
 }
 
 

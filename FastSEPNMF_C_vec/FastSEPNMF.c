@@ -5,7 +5,10 @@
 #include <stdlib.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <omp.h>
 #include "ReadWrite.h"
+
+#define N_THREADS 56
 
 void normalize_img(float *image, long int image_size, int bands);
 long int max_val_extract_array(float *normMAux, long int *b_pos, long int b_pos_size);
@@ -66,13 +69,18 @@ int main (int argc, char* argv[]){
     }
 
 	//Este for se puede separa en 2, el de fuera de longitud image size y el de dentro vectorizarlo
-	#pragma omp parallel for
-	for(i = 0; i < image_size; i++){
-		for(k = 0; k < bands; k++){
-        	normM[i] += image[i*bands + k] * image[i*bands + k]; 
+	omp_set_num_threads(N_THREADS);
+	#pragma omp parallel shared(normM, normM1, image, image_size, bands) private(i, k)
+	{
+		// #pragma omp for schedule(dynamic,10)
+		#pragma omp for
+		for(i = 0; i < image_size; i++){
+			for(k = 0; k < bands; k++){
+				normM[i] += image[i*bands + k] * image[i*bands + k]; 
+			}
+			normM1[i] = normM[i]; //if i == 1, normM1 = normM;
 		}
-		normM1[i] = normM[i]; //if i == 1, normM1 = normM;
-    }
+	}
 	gettimeofday(&t2,NULL);
 	t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
   	t_usec = (float)  (t2.tv_usec - t1.tv_usec);
@@ -168,14 +176,26 @@ int main (int argc, char* argv[]){
 		//(v'*M).^2
 		//normM = normM - (v'*M).^2;
 		gettimeofday(&t1,NULL);
-		#pragma omp parallel for
-		for(j = 0; j < image_size; j++){
-			faux = 0;
-			for(k = 0; k < bands; k++){//INTENTAR HACER ACCESOS ADYACENTES
-				faux += v[k] * image[j*bands + k];
+		omp_set_num_threads(N_THREADS);
+		#pragma omp parallel shared(normM,v,image, image_size, bands) private(j, k, faux)
+		{
+			#pragma omp for
+			for(j = 0; j < image_size; j++){
+				faux = 0;
+				for(k = 0; k < bands; k++){//INTENTAR HACER ACCESOS ADYACENTES
+					faux += v[k] * image[j*bands + k];
+				}
+				normM[j] -= faux * faux;
 			}
-			normM[j] -= faux * faux;
 		}
+		// #pragma omp parallel for
+		// for(j = 0; j < image_size; j++){
+		// 	faux = 0;
+		// 	for(k = 0; k < bands; k++){//INTENTAR HACER ACCESOS ADYACENTES
+		// 		faux += v[k] * image[j*bands + k];
+		// 	}
+		// 	normM[j] -= faux * faux;
+		// }
 		gettimeofday(&t2,NULL);
 		t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
 		t_usec = (float)  (t2.tv_usec - t1.tv_usec);
@@ -243,17 +263,20 @@ float max_Val(float *vector, long int image_size){
 void normalize_img(float *image, long int image_size, int bands){
     long int i, j, row;
 	float normVal;
-	
-	#pragma omp parallel for
-	for (i = 0; i < image_size ; i++){
-		row = i*bands;
-		normVal = 0;
-        for(j = 0; j < bands; j++){
-           normVal += image[row + j]; 
-        } 
-		normVal = 1.0/(normVal + 1.0e-16);
-		for(j = 0; j < bands; j++){
-			image[row + j] = image[row + j] * normVal;
+	omp_set_num_threads(N_THREADS);
+	#pragma omp parallel shared(image, image_size, bands) private(i, j, row, normVal)
+	{
+		#pragma omp for
+		for (i = 0; i < image_size ; i++){
+			row = i*bands;
+			normVal = 0;
+			for(j = 0; j < bands; j++){
+			normVal += image[row + j]; 
+			} 
+			normVal = 1.0/(normVal + 1.0e-16);
+			for(j = 0; j < bands; j++){
+				image[row + j] = image[row + j] * normVal;
+			}
 		}
-    }
+	}
 }

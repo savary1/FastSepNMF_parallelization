@@ -8,12 +8,12 @@ ifdef OPENCL_LIB
   CL_LDFLAGS = -L$(OPENCL_LIB)
 endif
 
-LIBRARIES := -lm 
+LIBRARIES := -lm
 
 #GCC_novec
 #OPT := -O1 -fno-tree-vectorize -ffast-math 
 #GCC_autovec
-#OPT := -O3 -mavx -ftree-vectorizer-verbose=6 -ffast-math -ftree-parallelize-loops=3
+#OPT := -O3 -mavx -ftree-vectorizer-verbose=6 -ffast-math -fopenmp#-ftree-parallelize-loops=3 
 #ICC_novec
 #OPT := -O0 -restrict -no-vec
 #ICC_autovec

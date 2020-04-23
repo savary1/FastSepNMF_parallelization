@@ -1,17 +1,19 @@
 //FastSEPNMF AROA AYUSO   DAVID SAVARY   2020
 
+#include "kernel.h"
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include "ReadWrite.h"
-#include "kernel.h"
 #include <sys/resource.h>
 
 void normalize_img(float *image, long int image_size, int bands);
 long int max_val_extract_array(float *normMAux, long int *b_pos, long int b_pos_size);
 float max_Val(float *vector, long int image_size);
+
+
 
 int main (int argc, char* argv[]){
 
@@ -37,6 +39,8 @@ int main (int argc, char* argv[]){
 		endmembers = atoi(argv[3]);
         normalize = atoi(argv[4]);
 	}
+	
+
 
 	secsFin = t_sec = t_usec = tNorm = tCostSquare = 0;
 
@@ -59,7 +63,17 @@ int main (int argc, char* argv[]){
 	
     Load_Image(argv[1], image, cols, rows, bands, datatype);
 	/**************************** #END# - Load Image and allocate memory*******************************/
+	
+	/**************************  CUDA  **********************************/
+	
+	float *v_c, *image_c, *normM_c;
+	
+	select_device();
+	reservar_memoria(bands, image_size, &v_c, &image_c, &normM_c);
+	
 
+	/************************************************************/
+	
 	gettimeofday(&t0,NULL);
 
     /**************************** #INIT# - Normalize image****************************************/
@@ -67,14 +81,7 @@ int main (int argc, char* argv[]){
     if (normalize == 1){
         normalize_img(image, image_size, bands);   
     }
-	
-	/**************************  CUDA  **********************************/
-		
-	//float *out = (float *) malloc (image_size * sizeof(float)); /////////////////////////// Pruebaaaaas
-	//float *aa = (float *) malloc (bands * sizeof(float));
 
-	
-	/************************************************************/
 
 	//Este for se puede separa en 2, el de fuera de longitud image size y el de dentro vectorizarlo
 	#pragma omp parallel for
@@ -88,6 +95,11 @@ int main (int argc, char* argv[]){
 	t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
   	t_usec = (float)  (t2.tv_usec - t1.tv_usec);
 	tNorm = t_sec + t_usec/1.0e+6;
+	
+	//////   --------------------------------------------------   CUDA
+	copiar_image(image,image_c, bands, image_size);
+	copy_normM(normM, normM_c, image_size);
+	//////
 
 	/**************************** #END# - Normalize image****************************************/
 	max_val = max_Val(normM, image_size);
@@ -181,17 +193,17 @@ int main (int argc, char* argv[]){
 		
 		gettimeofday(&t1,NULL);
 		
-		//act(v, image, bands, normM, image_size, i, rows);
+		actualizar_normM(v, bands, normM, image_size, i, rows, v_c, image_c, normM_c);
 		
-		#pragma omp parallel for
+		/*#pragma omp parallel for
 		for(j = 0; j < image_size; j++){
 			faux = 0;
 			for(k = 0; k < bands; k++){//INTENTAR HACER ACCESOS ADYACENTES
 				faux += v[k] * image[j*bands + k];
 			}
 			normM[j] -= faux * faux;
-		}
-				
+		}*/		
+		
 		gettimeofday(&t2,NULL);
 		t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
 		t_usec = (float)  (t2.tv_usec - t1.tv_usec);
@@ -226,8 +238,9 @@ int main (int argc, char* argv[]){
 	free(v);
 	
 	/****************  CUDA  ******************/
-	//free(out); // pruebaaaa
-	//free(aa);
+	liberar_memoria(v_c, image_c, normM_c);
+	
+	
 	/******************************************/
 	
     return 0;

@@ -4,7 +4,7 @@ See "https://software.intel.com/en-us/intel-advisor-xe" for details.
 
 Intel(R) C Intel(R) 64 Compiler for applications running on Intel(R) 64, Version 18.0.1.163 Build 20171018
 
-Compiler options: -O3 -restrict -qopt-report-phase=vec,loop,openmp -qopt-report=3 -qopenmp -L/optshared/cuda/lib64 -o ReadWrite.o -c -w
+Compiler options: -I/optshared/cuda/include/CL -L/optshared/cuda/lib64 -O3 -restrict -qopt-report-phase=vec,loop,openmp -qopt-report=3 -qopenmp -o ReadWrite.o -c -w
 
 Begin optimization report for: cleanString(char *, char *)
 
@@ -89,19 +89,19 @@ LOOP BEGIN at ReadWrite.c(126,6)
    LOOP END
 LOOP END
 
-LOOP BEGIN at ReadWrite.c(145,6)
+LOOP BEGIN at ReadWrite.c(146,6)
    remark #25096: Loop Interchange not done due to: Imperfect Loop Nest (Either at Source or due to other Compiler Transformations)
    remark #25452: Original Order found to be proper, but by a close margin
    remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
-   remark #15346: vector dependence: assumed OUTPUT dependence between imageVector[numBands*?+i] (149:9) and imageVector[numBands*?+i] (149:9)
+   remark #15346: vector dependence: assumed OUTPUT dependence between imageVector[numBands*?+i] (150:9) and imageVector[numBands*?+i] (150:9)
 
-   LOOP BEGIN at ReadWrite.c(146,7)
+   LOOP BEGIN at ReadWrite.c(147,7)
       remark #25096: Loop Interchange not done due to: Imperfect Loop Nest (Either at Source or due to other Compiler Transformations)
       remark #25452: Original Order found to be proper, but by a close margin
       remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
-      remark #15346: vector dependence: assumed OUTPUT dependence between imageVector[numBands*?+i] (149:9) and imageVector[numBands*?+i] (149:9)
+      remark #15346: vector dependence: assumed OUTPUT dependence between imageVector[numBands*?+i] (150:9) and imageVector[numBands*?+i] (150:9)
 
-      LOOP BEGIN at ReadWrite.c(147,8)
+      LOOP BEGIN at ReadWrite.c(148,8)
          remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
          remark #15450: unmasked unaligned unit stride loads: 1 
          remark #15463: unmasked indexed (or scatter) stores: 1 
@@ -118,20 +118,20 @@ LOOP BEGIN at ReadWrite.c(145,6)
 LOOP END
 ===========================================================================
 
-Begin optimization report for: Load_Image_IIR(char *, float *, int, int, int, int)
+Begin optimization report for: Load_Image_IIR(char *, float *, int, int, int)
 
     Report from: Loop nest & Vector optimizations [loop, vec]
 
 
-LOOP BEGIN at ReadWrite.c(189,5)
+LOOP BEGIN at ReadWrite.c(190,5)
    remark #15542: loop was not vectorized: inner loop was already vectorized
 
-   LOOP BEGIN at ReadWrite.c(190,6)
+   LOOP BEGIN at ReadWrite.c(191,6)
    <Peeled loop for vectorization>
       remark #25015: Estimate of max trip count of loop=7
    LOOP END
 
-   LOOP BEGIN at ReadWrite.c(190,6)
+   LOOP BEGIN at ReadWrite.c(191,6)
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
       remark #15448: unmasked aligned unit stride loads: 1 
@@ -144,24 +144,24 @@ LOOP BEGIN at ReadWrite.c(189,5)
       remark #15488: --- end vector cost summary ---
    LOOP END
 
-   LOOP BEGIN at ReadWrite.c(190,6)
+   LOOP BEGIN at ReadWrite.c(191,6)
    <Alternate Alignment Vectorized Loop>
    LOOP END
 
-   LOOP BEGIN at ReadWrite.c(190,6)
+   LOOP BEGIN at ReadWrite.c(191,6)
    <Remainder loop for vectorization>
    LOOP END
 LOOP END
 
-LOOP BEGIN at ReadWrite.c(206,5)
+LOOP BEGIN at ReadWrite.c(207,5)
    remark #15542: loop was not vectorized: inner loop was already vectorized
 
-   LOOP BEGIN at ReadWrite.c(207,6)
+   LOOP BEGIN at ReadWrite.c(208,6)
    <Peeled loop for vectorization>
       remark #25015: Estimate of max trip count of loop=3
    LOOP END
 
-   LOOP BEGIN at ReadWrite.c(207,6)
+   LOOP BEGIN at ReadWrite.c(208,6)
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
       remark #15448: unmasked aligned unit stride loads: 1 
@@ -173,24 +173,24 @@ LOOP BEGIN at ReadWrite.c(206,5)
       remark #15488: --- end vector cost summary ---
    LOOP END
 
-   LOOP BEGIN at ReadWrite.c(207,6)
+   LOOP BEGIN at ReadWrite.c(208,6)
    <Alternate Alignment Vectorized Loop>
    LOOP END
 
-   LOOP BEGIN at ReadWrite.c(207,6)
+   LOOP BEGIN at ReadWrite.c(208,6)
    <Remainder loop for vectorization>
    LOOP END
 LOOP END
 
-LOOP BEGIN at ReadWrite.c(223,5)
+LOOP BEGIN at ReadWrite.c(224,5)
    remark #15542: loop was not vectorized: inner loop was already vectorized
 
-   LOOP BEGIN at ReadWrite.c(224,6)
+   LOOP BEGIN at ReadWrite.c(225,6)
    <Peeled loop for vectorization>
       remark #25015: Estimate of max trip count of loop=3
    LOOP END
 
-   LOOP BEGIN at ReadWrite.c(224,6)
+   LOOP BEGIN at ReadWrite.c(225,6)
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
       remark #15448: unmasked aligned unit stride loads: 1 
@@ -203,11 +203,11 @@ LOOP BEGIN at ReadWrite.c(223,5)
       remark #15488: --- end vector cost summary ---
    LOOP END
 
-   LOOP BEGIN at ReadWrite.c(224,6)
+   LOOP BEGIN at ReadWrite.c(225,6)
    <Alternate Alignment Vectorized Loop>
    LOOP END
 
-   LOOP BEGIN at ReadWrite.c(224,6)
+   LOOP BEGIN at ReadWrite.c(225,6)
    <Remainder loop for vectorization>
    LOOP END
 LOOP END
@@ -218,16 +218,16 @@ Begin optimization report for: writeResult(double *, const char *, int, int, int
     Report from: Loop nest & Vector optimizations [loop, vec]
 
 
-LOOP BEGIN at ReadWrite.c(266,2)
+LOOP BEGIN at ReadWrite.c(268,2)
    remark #25399: memcopy generated
    remark #15542: loop was not vectorized: inner loop was already vectorized
 
-   LOOP BEGIN at ReadWrite.c(266,2)
+   LOOP BEGIN at ReadWrite.c(268,2)
    <Peeled loop for vectorization>
       remark #25015: Estimate of max trip count of loop=1
    LOOP END
 
-   LOOP BEGIN at ReadWrite.c(266,2)
+   LOOP BEGIN at ReadWrite.c(268,2)
       remark #15300: LOOP WAS VECTORIZED
       remark #15442: entire loop may be executed in remainder
       remark #15448: unmasked aligned unit stride loads: 1 
@@ -240,12 +240,12 @@ LOOP BEGIN at ReadWrite.c(266,2)
       remark #25015: Estimate of max trip count of loop=6
    LOOP END
 
-   LOOP BEGIN at ReadWrite.c(266,2)
+   LOOP BEGIN at ReadWrite.c(268,2)
    <Alternate Alignment Vectorized Loop>
       remark #25015: Estimate of max trip count of loop=6
    LOOP END
 
-   LOOP BEGIN at ReadWrite.c(266,2)
+   LOOP BEGIN at ReadWrite.c(268,2)
    <Remainder loop for vectorization>
       remark #25015: Estimate of max trip count of loop=12
    LOOP END

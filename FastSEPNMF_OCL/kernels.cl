@@ -14,7 +14,7 @@ __kernel void update_normM(__global float* restrict clImage, __global float* res
 
 
 
-__kernel void normalize_img(__global float* restrict clImage, __global float* restrict clImageHost, __global float* restrict clNormM, int image_size, int bands){
+__kernel void normalize_img(__global float* restrict clImage, __global float* restrict clNormM, int image_size, int bands){
     unsigned int id = get_group_id(0) * get_local_size(0) + get_local_id(0);
     int j;
     float imageNewVal, normAcum = 0, normAux = 0;

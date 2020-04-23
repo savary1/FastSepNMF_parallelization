@@ -3,7 +3,7 @@ CC = gcc
 NVCC = nvcc
 
 LIBRARIES := -lm 
-LIBS = -L/optshared/cuda-10.0/lib64/ -lcudart -lm 
+LIBS = -L/optshared/cuda-10.0/lib64 -lcudart -lm 
 
 OPT := -O3 -march=native -ftree-vectorizer-verbose=6 -ffast-math -ftree-parallelize-loops=3
 

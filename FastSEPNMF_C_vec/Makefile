@@ -11,7 +11,7 @@ endif
 LIBRARIES := -lm
 
 #GCC_novec
-#OPT := -O1 -fno-tree-vectorize -ffast-math 
+#OPT := -O0 -fno-tree-vectorize -ffast-math 
 #GCC_autovec
 #OPT := -O3 -mavx -ftree-vectorizer-verbose=6 -ffast-math -fopenmp#-ftree-parallelize-loops=3 
 #ICC_novec

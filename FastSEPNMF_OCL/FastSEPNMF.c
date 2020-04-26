@@ -15,11 +15,14 @@
 void normalize_img(float *image, long int image_size, int bands);
 long int max_val_extract_array(float *normMAux, long int *b_pos, long int b_pos_size);
 float max_Val(float *vector, long int image_size);
+void exit_if_OpenCL_fail(cl_int code, char* msg);
+cl_device_id select_device();
+cl_program build_kernels(cl_context clContext, cl_device_id selectedDevice);
 
 int main (int argc, char* argv[]){
 
-	struct timeval t0, tfin, t1, t2;
-	float secsFin, t_sec, t_usec, tNorm, tCostSquare, tCopy;
+	struct timeval t0, tfin, t1, t2, t3, t4;
+	float secsFin, t_sec, t_usec, tNorm, tCostSquare, tCopy, tNormKernel;
     int rows, cols, bands; //size of the image
     int datatype;
     int endmembers;
@@ -49,7 +52,7 @@ int main (int argc, char* argv[]){
         normalize = atoi(argv[4]);
 	}
 
-	secsFin = t_sec = t_usec = tNorm = tCostSquare = tCopy = 0;
+	secsFin = t_sec = t_usec = tNorm = tCostSquare = tCopy = tNormKernel = 0;
 
 	/************************************* #INIT# - OpenCL init****************************************/
 	
@@ -78,42 +81,51 @@ int main (int argc, char* argv[]){
     long int image_size = cols*rows;
     float *image = (float *) calloc (image_size * bands, sizeof(float));    	//input image
     float *U = (float *) malloc (bands * endmembers * sizeof(float));       	//selected endmembers
-    float *normM = (float *) calloc (image_size, sizeof(float));            	//normalized image
+    // float *normM = (float *) calloc (image_size, sizeof(float));            	//normalized image
+	float *normM;
 	float *normM1 = (float *) malloc (image_size * sizeof(float));			//copy of normM
 	float *normMAux = (float *) malloc (image_size * sizeof(float));			//aux array to find the positions of (a-normM)/a <= 1e-6
 	long int *b_pos = (long int *) malloc (image_size * sizeof(long int));	   	//valid positions of normM that meet (a-normM)/a <= 1e-6
-	float *v = (float *) malloc (bands * sizeof(float));						//used to update normM in every iteration                                                    	//float auxiliary array 
+	// float *v = (float *) malloc (bands * sizeof(float));						//used to update normM in every iteration  
+	float *v;                                                  	//float auxiliary array 
     long int J[endmembers];                                                 	//selected endmembers positions in input image
+	
 
     Load_Image_IIR(argv[1], image, image_size, bands, datatype);
 
+	gettimeofday(&t0,NULL);
+	
 	size_t localSize = 1024;
 	size_t globalsize = ceil(image_size/(float)localSize) * localSize;
 
-	
-	clImage = clCreateBuffer(clContext, CL_MEM_READ_WRITE , image_size * bands * sizeof(float), NULL, &status);
+	clImage = clCreateBuffer(clContext, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, image_size * bands * sizeof(float), image, &status);
 	exit_if_OpenCL_fail(status, "Error creating clImage buffer on device");
 	clNormM = clCreateBuffer(clContext, CL_MEM_WRITE_ONLY, image_size * sizeof(float), NULL, &status);
 	exit_if_OpenCL_fail(status, "Error creating clNorm buffer on device");
 	clV = clCreateBuffer(clContext, CL_MEM_READ_ONLY, bands * sizeof(float), NULL, &status);
 	exit_if_OpenCL_fail(status, "Error creating clV buffer on device");
+
+	status  = clSetKernelArg(updateNormMKernel, 0, sizeof(cl_mem), &clImage);
+	exit_if_OpenCL_fail(status, "Error setting image as parameter in the device");
+	status  = clSetKernelArg(updateNormMKernel, 1, sizeof(cl_mem), &clV);
+	exit_if_OpenCL_fail(status, "Error setting v as parameter in the device");
+	status  = clSetKernelArg(updateNormMKernel, 2, sizeof(cl_mem), &clNormM);
+	exit_if_OpenCL_fail(status, "Error setting normM as parameter in the device");
+	status = clSetKernelArg(updateNormMKernel, 3, sizeof(int), &bands);
+	exit_if_OpenCL_fail(status, "Error setting bands as parameter in the device");
+	status = clSetKernelArg(updateNormMKernel, 4, sizeof(int), &image_size);
+	exit_if_OpenCL_fail(status, "Error setting image_size as parameter in the device");
 	
 	/**************************** #END# - Load Image and allocate memory*******************************/
 
-	gettimeofday(&t0,NULL);
-	printf("\n\nFirst 100 image:\n");
-	for(j = 0; j < 100; j++){
-		printf("%.12f, ", image[j * image_size]);
-	}
-
     /**************************** #INIT# - Normalize image****************************************/
-	gettimeofday(&t1,NULL);
-	status = clEnqueueWriteBuffer(clQueue, clImage, CL_TRUE, 0, image_size * bands * sizeof(float), image, 0, NULL, NULL);
-		exit_if_OpenCL_fail(status, "Error copying v to the device");
-	gettimeofday(&t2,NULL);
-	t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
-  	t_usec = (float)  (t2.tv_usec - t1.tv_usec);
-	tCopy = tCopy + t_sec + t_usec/1.0e+6;
+	// gettimeofday(&t1,NULL);
+	// status = clEnqueueWriteBuffer(clQueue, clImage, CL_TRUE, 0, image_size * bands * sizeof(float), image, 0, NULL, NULL);
+	// 	exit_if_OpenCL_fail(status, "Error copying v to the device");
+	// gettimeofday(&t2,NULL);
+	// t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
+  	// t_usec = (float)  (t2.tv_usec - t1.tv_usec);
+	// tCopy = tCopy + t_sec + t_usec/1.0e+6;
 
 	gettimeofday(&t1,NULL);
     if (normalize == 1){
@@ -129,45 +141,30 @@ int main (int argc, char* argv[]){
 		status  = clSetKernelArg(normalizeImgKernel, 3, sizeof(int), &bands);
 		exit_if_OpenCL_fail(status, "Error setting bands as parameter in the device");
 
+		gettimeofday(&t3,NULL);
 		status = clEnqueueNDRangeKernel(clQueue, normalizeImgKernel, 1, NULL, &globalsize, &localSize, 0, NULL, NULL);
 		exit_if_OpenCL_fail(status, "Error executing kernel");
 		clFinish(clQueue);
+		gettimeofday(&t4,NULL);
+		t_sec  = (float)  (t4.tv_sec - t3.tv_sec);
+		t_usec = (float)  (t4.tv_usec - t3.tv_usec);
+		tNormKernel = t_sec + t_usec/1.0e+6;
 
-		status = clEnqueueReadBuffer(clQueue, clNormM, CL_TRUE, 0, image_size * sizeof(float), normM, 0, NULL, NULL);
-		exit_if_OpenCL_fail(status, "Error reading normM from the device");
-		// status = clEnqueueReadBuffer(clQueue, clImage, CL_TRUE, 0, image_size * bands * sizeof(float), image, 0, NULL, NULL);
-		// exit_if_OpenCL_fail(status, "Error reading image from the device");
+		// status = clEnqueueReadBuffer(clQueue, clNormM, CL_TRUE, 0, image_size * sizeof(float), normM, 0, NULL, NULL);
+		// exit_if_OpenCL_fail(status, "Error reading normM from the device");
+		normM = (float *) clEnqueueMapBuffer(clQueue, clNormM, CL_TRUE, CL_MAP_READ, 0, image_size * sizeof(float), 0, NULL, NULL, &status);
+		exit_if_OpenCL_fail(status, "Error mapping normM to the host");
 		clFinish(clQueue);   
     }
-
-	printf("\n\nFirst 100 image norm:\n");
-	for(j = 0; j < 100; j++){
-		printf("%.12f, ", image[j * image_size]);
-	}
 
 	//Este for se puede separa en 2, el de fuera de longitud image size y el de dentro vectorizarlo
 	for(i = 0; i < image_size; i++){
 		normM1[i] = normM[i]; //if i == 1, normM1 = normM;
     }
-	printf("\n\nFirst 100 normM:\n");
-	for(j = 0; j < 100; j++){
-		printf("%.12f, ", normM[j]);
-	}
 	gettimeofday(&t2,NULL);
 	t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
   	t_usec = (float)  (t2.tv_usec - t1.tv_usec);
 	tNorm = t_sec + t_usec/1.0e+6;
-
-	status  = clSetKernelArg(updateNormMKernel, 0, sizeof(cl_mem), &clImage);
-	exit_if_OpenCL_fail(status, "Error setting image as parameter in the device");
-	status  = clSetKernelArg(updateNormMKernel, 1, sizeof(cl_mem), &clV);
-	exit_if_OpenCL_fail(status, "Error setting v as parameter in the device");
-	status  = clSetKernelArg(updateNormMKernel, 2, sizeof(cl_mem), &clNormM);
-	exit_if_OpenCL_fail(status, "Error setting normM as parameter in the device");
-	status = clSetKernelArg(updateNormMKernel, 3, sizeof(int), &bands);
-	exit_if_OpenCL_fail(status, "Error setting bands as parameter in the device");
-	status = clSetKernelArg(updateNormMKernel, 4, sizeof(int), &image_size);
-	exit_if_OpenCL_fail(status, "Error setting image_size as parameter in the device");
 
 	/**************************** #END# - Normalize image****************************************/
 	max_val = max_Val(normM, image_size);
@@ -176,6 +173,9 @@ int main (int argc, char* argv[]){
 	i = 0;
 	//while i <= r && max(normM)/nM > 1e-9
 	while(i < endmembers){
+		v = (float *) clEnqueueMapBuffer(clQueue, clV, CL_TRUE, CL_MAP_WRITE, 0, bands * sizeof(float), 0, NULL, NULL, &status);
+		exit_if_OpenCL_fail(status, "Error mapping v to the host");
+
 		//[a,b] = max(normM);
 		a = max_Val(normM, image_size);
 
@@ -259,17 +259,23 @@ int main (int argc, char* argv[]){
 		//(v'*M).^2
 		//normM = normM - (v'*M).^2;
 		gettimeofday(&t1,NULL);
-		status = clEnqueueWriteBuffer(clQueue, clV, CL_TRUE, 0, bands * sizeof(float), v, 0, NULL, NULL);
+		status = clEnqueueUnmapMemObject(clQueue, clV, v, 0, NULL, NULL);
 		exit_if_OpenCL_fail(status, "Error copying v to the device");
+		status = clEnqueueUnmapMemObject(clQueue, clNormM, normM, 0, NULL, NULL);
+		exit_if_OpenCL_fail(status, "Error unmapping normM to the device");
+		// status = clEnqueueWriteBuffer(clQueue, clV, CL_TRUE, 0, bands * sizeof(float), v, 0, NULL, NULL);
+		// exit_if_OpenCL_fail(status, "Error copying v to the device");
 
 		printf("Ejecutando kernel - %d\n", i);
 		status = clEnqueueNDRangeKernel(clQueue, updateNormMKernel, 1, NULL, &globalsize, &localSize, 0, NULL, NULL);
 		exit_if_OpenCL_fail(status, "Error executing kernel");
 		clFinish(clQueue);
 
-		status = clEnqueueReadBuffer(clQueue, clNormM, CL_TRUE, 0, image_size * sizeof(float), normM, 0, NULL, NULL);
-		exit_if_OpenCL_fail(status, "Error reading normM from the device");
-		clFinish(clQueue);
+		// status = clEnqueueReadBuffer(clQueue, clNormM, CL_TRUE, 0, image_size * sizeof(float), normM, 0, NULL, NULL);
+		// exit_if_OpenCL_fail(status, "Error reading normM from the device");
+		// clFinish(clQueue);
+		normM = (float *) clEnqueueMapBuffer(clQueue, clNormM, CL_TRUE, CL_MAP_READ, 0, image_size * sizeof(float), 0, NULL, NULL, &status);
+		exit_if_OpenCL_fail(status, "Error mapping normM to the host");
 
 		gettimeofday(&t2,NULL);
 		t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
@@ -295,7 +301,7 @@ int main (int argc, char* argv[]){
 	printf("T norm:	\t\t%.5f segundos\n", tNorm);
 	printf("T square loop:	\t%.5f segundos\n", tCostSquare);
 	printf("T copy:	\t%.5f segundos\n", tCopy);
-
+	printf("T normKernel:	\t%.5f segundos\n", tNormKernel);
 
 	clReleaseMemObject(clImage);
    	clReleaseMemObject(clNormM);
@@ -308,11 +314,11 @@ int main (int argc, char* argv[]){
     
     free(image);
     free(U);
-    free(normM);
+    //free(normM);
 	free(normM1);
 	free(normMAux);
 	free(b_pos);
-	free(v);
+	//free(v);
 
     return 0;
 }

@@ -79,28 +79,28 @@ int main (int argc, char* argv[]){
     /**************************** #INIT# - Normalize image****************************************/
 	gettimeofday(&t1,NULL);
     if (normalize == 1){
-        normalize_img(image, image_size, bands);   
+        //normalize_img(image, image_size, bands);   
+		normalize_imgC(image, image_size, bands, image_c, rows, normM_c, normM, normM1);
     }
-
-
-	//Este for se puede separa en 2, el de fuera de longitud image size y el de dentro vectorizarlo
-	#pragma omp parallel for
-	for(i = 0; i < image_size; i++){
-		for(k = 0; k < bands; k++){
-        	normM[i] += image[i*bands + k] * image[i*bands + k]; 
+	else{
+		/*
+		#pragma omp parallel for
+		for(i = 0; i < image_size; i++){
+			for(k = 0; k < bands; k++){
+				normM[i] += image[i*bands + k] * image[i*bands + k]; 
+			}
+			normM1[i] = normM[i]; //if i == 1, normM1 = normM;
 		}
-		normM1[i] = normM[i]; //if i == 1, normM1 = normM;
-    }
+		*/
+		
+		calculate_normM(image, normM, normM1, image_size, bands, rows, image_c, normM_c);
+	}
+
 	gettimeofday(&t2,NULL);
 	t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
   	t_usec = (float)  (t2.tv_usec - t1.tv_usec);
 	tNorm = t_sec + t_usec/1.0e+6;
 	
-	//////   --------------------------------------------------   CUDA
-	copiar_image(image,image_c, bands, image_size);
-	copy_normM(normM, normM_c, image_size);
-	//////
-
 	/**************************** #END# - Normalize image****************************************/
 	max_val = max_Val(normM, image_size);
     /**************************** #INIT# - FastSEPNMF algorithm****************************************/ 

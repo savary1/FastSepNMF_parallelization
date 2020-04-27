@@ -1,0 +1,400 @@
+Intel(R) Advisor can now assist with vectorization and show optimization
+  report messages with your source code.
+See "https://software.intel.com/en-us/intel-advisor-xe" for details.
+
+Intel(R) C Intel(R) 64 Compiler for applications running on Intel(R) 64, Version 18.0.1.163 Build 20171018
+
+Compiler options: -I. -O3 -restrict -qopt-report-phase=vec,loop,openmp -qopt-report=3 -qopenmp -c -o FastSEPNMF.o
+
+Begin optimization report for: main(int, char **)
+
+    Report from: Loop nest & Vector optimizations [loop, vec]
+
+
+LOOP BEGIN at FastSEPNMF.c(258,5) inlined into FastSEPNMF.c(104,12)
+<Peeled loop for vectorization>
+   remark #25015: Estimate of max trip count of loop=3
+LOOP END
+
+LOOP BEGIN at FastSEPNMF.c(258,5) inlined into FastSEPNMF.c(104,12)
+   remark #15300: LOOP WAS VECTORIZED
+   remark #15442: entire loop may be executed in remainder
+   remark #15448: unmasked aligned unit stride loads: 1 
+   remark #15475: --- begin vector cost summary ---
+   remark #15476: scalar cost: 8 
+   remark #15477: vector cost: 4.250 
+   remark #15478: estimated potential speedup: 1.800 
+   remark #15488: --- end vector cost summary ---
+LOOP END
+
+LOOP BEGIN at FastSEPNMF.c(258,5) inlined into FastSEPNMF.c(104,12)
+<Remainder loop for vectorization>
+LOOP END
+
+LOOP BEGIN at FastSEPNMF.c(109,2)
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at FastSEPNMF.c(258,5) inlined into FastSEPNMF.c(111,7)
+   <Peeled loop for vectorization>
+      remark #25015: Estimate of max trip count of loop=3
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(258,5) inlined into FastSEPNMF.c(111,7)
+      remark #15300: LOOP WAS VECTORIZED
+      remark #15442: entire loop may be executed in remainder
+      remark #15448: unmasked aligned unit stride loads: 1 
+      remark #15475: --- begin vector cost summary ---
+      remark #15476: scalar cost: 8 
+      remark #15477: vector cost: 4.250 
+      remark #15478: estimated potential speedup: 1.800 
+      remark #15488: --- end vector cost summary ---
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(258,5) inlined into FastSEPNMF.c(111,7)
+   <Remainder loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(118,3)
+   <Peeled loop for vectorization>
+      remark #25015: Estimate of max trip count of loop=3
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(118,3)
+      remark #15300: LOOP WAS VECTORIZED
+      remark #15442: entire loop may be executed in remainder
+      remark #15448: unmasked aligned unit stride loads: 1 
+      remark #15449: unmasked aligned unit stride stores: 1 
+      remark #15475: --- begin vector cost summary ---
+      remark #15476: scalar cost: 33 
+      remark #15477: vector cost: 9.250 
+      remark #15478: estimated potential speedup: 3.420 
+      remark #15486: divides: 1 
+      remark #15488: --- end vector cost summary ---
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(118,3)
+   <Alternate Alignment Vectorized Loop>
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(118,3)
+   <Remainder loop for vectorization>
+      remark #15301: REMAINDER LOOP WAS VECTORIZED
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(118,3)
+   <Remainder loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(124,3)
+      remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+      remark #15346: vector dependence: assumed ANTI dependence between b_pos_size (126:5) and b_pos_size (127:5)
+      remark #25439: unrolled with remainder by 2  
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(124,3)
+   <Remainder>
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(244,5) inlined into FastSEPNMF.c(133,8)
+      remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+      remark #15346: vector dependence: assumed ANTI dependence between max_val (245:9) and max_val (246:13)
+      remark #25439: unrolled with remainder by 2  
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(244,5) inlined into FastSEPNMF.c(133,8)
+   <Remainder>
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(142,3)
+      remark #15335: loop was not vectorized: vectorization possible but seems inefficient. Use vector always directive or -vec-threshold0 to override 
+      remark #15451: unmasked unaligned unit stride stores: 1 
+      remark #15452: unmasked strided loads: 1 
+      remark #15475: --- begin vector cost summary ---
+      remark #15476: scalar cost: 5 
+      remark #15477: vector cost: 9.250 
+      remark #15478: estimated potential speedup: 0.530 
+      remark #15488: --- end vector cost summary ---
+      remark #25439: unrolled with remainder by 2  
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(142,3)
+   <Remainder>
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(147,3)
+      remark #15542: loop was not vectorized: inner loop was already vectorized
+
+      LOOP BEGIN at FastSEPNMF.c(150,4)
+      <Peeled loop for vectorization>
+         remark #25015: Estimate of max trip count of loop=3
+      LOOP END
+
+      LOOP BEGIN at FastSEPNMF.c(150,4)
+         remark #15300: LOOP WAS VECTORIZED
+         remark #15442: entire loop may be executed in remainder
+         remark #15448: unmasked aligned unit stride loads: 2 
+         remark #15475: --- begin vector cost summary ---
+         remark #15476: scalar cost: 8 
+         remark #15477: vector cost: 2.000 
+         remark #15478: estimated potential speedup: 3.580 
+         remark #15488: --- end vector cost summary ---
+      LOOP END
+
+      LOOP BEGIN at FastSEPNMF.c(150,4)
+      <Alternate Alignment Vectorized Loop>
+      LOOP END
+
+      LOOP BEGIN at FastSEPNMF.c(150,4)
+      <Remainder loop for vectorization>
+      LOOP END
+
+      LOOP BEGIN at FastSEPNMF.c(156,4)
+      <Peeled loop for vectorization>
+         remark #25015: Estimate of max trip count of loop=3
+      LOOP END
+
+      LOOP BEGIN at FastSEPNMF.c(156,4)
+         remark #15300: LOOP WAS VECTORIZED
+         remark #15442: entire loop may be executed in remainder
+         remark #15448: unmasked aligned unit stride loads: 2 
+         remark #15449: unmasked aligned unit stride stores: 1 
+         remark #15475: --- begin vector cost summary ---
+         remark #15476: scalar cost: 10 
+         remark #15477: vector cost: 2.000 
+         remark #15478: estimated potential speedup: 4.620 
+         remark #15488: --- end vector cost summary ---
+      LOOP END
+
+      LOOP BEGIN at FastSEPNMF.c(156,4)
+      <Alternate Alignment Vectorized Loop>
+      LOOP END
+
+      LOOP BEGIN at FastSEPNMF.c(156,4)
+      <Remainder loop for vectorization>
+         remark #15301: REMAINDER LOOP WAS VECTORIZED
+      LOOP END
+
+      LOOP BEGIN at FastSEPNMF.c(156,4)
+      <Remainder loop for vectorization>
+      LOOP END
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(166,3)
+   <Peeled loop for vectorization>
+      remark #25015: Estimate of max trip count of loop=3
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(166,3)
+      remark #15300: LOOP WAS VECTORIZED
+      remark #15442: entire loop may be executed in remainder
+      remark #15448: unmasked aligned unit stride loads: 1 
+      remark #15475: --- begin vector cost summary ---
+      remark #15476: scalar cost: 8 
+      remark #15477: vector cost: 2.000 
+      remark #15478: estimated potential speedup: 3.600 
+      remark #15488: --- end vector cost summary ---
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(166,3)
+   <Remainder loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(170,3)
+   <Peeled loop for vectorization>
+      remark #25015: Estimate of max trip count of loop=3
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(170,3)
+      remark #15300: LOOP WAS VECTORIZED
+      remark #15442: entire loop may be executed in remainder
+      remark #15448: unmasked aligned unit stride loads: 1 
+      remark #15449: unmasked aligned unit stride stores: 2 
+      remark #15475: --- begin vector cost summary ---
+      remark #15476: scalar cost: 35 
+      remark #15477: vector cost: 9.500 
+      remark #15478: estimated potential speedup: 3.530 
+      remark #15486: divides: 1 
+      remark #15488: --- end vector cost summary ---
+      remark #25456: Number of Array Refs Scalar Replaced In Loop: 2
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(170,3)
+   <Alternate Alignment Vectorized Loop>
+      remark #25456: Number of Array Refs Scalar Replaced In Loop: 2
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(170,3)
+   <Remainder loop for vectorization>
+      remark #15301: REMAINDER LOOP WAS VECTORIZED
+      remark #25456: Number of Array Refs Scalar Replaced In Loop: 1
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(170,3)
+   <Remainder loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(176,3)
+      remark #15542: loop was not vectorized: inner loop was already vectorized
+
+      LOOP BEGIN at FastSEPNMF.c(179,4)
+      <Peeled loop for vectorization>
+         remark #25015: Estimate of max trip count of loop=3
+      LOOP END
+
+      LOOP BEGIN at FastSEPNMF.c(179,4)
+         remark #15300: LOOP WAS VECTORIZED
+         remark #15442: entire loop may be executed in remainder
+         remark #15448: unmasked aligned unit stride loads: 2 
+         remark #15475: --- begin vector cost summary ---
+         remark #15476: scalar cost: 8 
+         remark #15477: vector cost: 2.000 
+         remark #15478: estimated potential speedup: 3.580 
+         remark #15488: --- end vector cost summary ---
+      LOOP END
+
+      LOOP BEGIN at FastSEPNMF.c(179,4)
+      <Alternate Alignment Vectorized Loop>
+      LOOP END
+
+      LOOP BEGIN at FastSEPNMF.c(179,4)
+      <Remainder loop for vectorization>
+      LOOP END
+
+      LOOP BEGIN at FastSEPNMF.c(184,4)
+      <Peeled loop for vectorization>
+         remark #25015: Estimate of max trip count of loop=3
+      LOOP END
+
+      LOOP BEGIN at FastSEPNMF.c(184,4)
+         remark #15300: LOOP WAS VECTORIZED
+         remark #15442: entire loop may be executed in remainder
+         remark #15448: unmasked aligned unit stride loads: 2 
+         remark #15449: unmasked aligned unit stride stores: 1 
+         remark #15475: --- begin vector cost summary ---
+         remark #15476: scalar cost: 10 
+         remark #15477: vector cost: 2.000 
+         remark #15478: estimated potential speedup: 4.620 
+         remark #15488: --- end vector cost summary ---
+      LOOP END
+
+      LOOP BEGIN at FastSEPNMF.c(184,4)
+      <Alternate Alignment Vectorized Loop>
+      LOOP END
+
+      LOOP BEGIN at FastSEPNMF.c(184,4)
+      <Remainder loop for vectorization>
+         remark #15301: REMAINDER LOOP WAS VECTORIZED
+      LOOP END
+
+      LOOP BEGIN at FastSEPNMF.c(184,4)
+      <Remainder loop for vectorization>
+      LOOP END
+   LOOP END
+LOOP END
+
+LOOP BEGIN at FastSEPNMF.c(214,5)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+LOOP END
+===========================================================================
+
+Begin optimization report for: max_val_extract_array(float *, long *, long)
+
+    Report from: Loop nest & Vector optimizations [loop, vec]
+
+
+LOOP BEGIN at FastSEPNMF.c(244,5)
+   remark #15344: loop was not vectorized: vector dependence prevents vectorization. First dependence is shown below. Use level 5 report for details
+   remark #15346: vector dependence: assumed ANTI dependence between max_val (245:9) and max_val (246:13)
+   remark #25439: unrolled with remainder by 2  
+LOOP END
+
+LOOP BEGIN at FastSEPNMF.c(244,5)
+<Remainder>
+LOOP END
+===========================================================================
+
+Begin optimization report for: max_Val(float *, long)
+
+    Report from: Loop nest & Vector optimizations [loop, vec]
+
+
+LOOP BEGIN at FastSEPNMF.c(258,5)
+<Peeled loop for vectorization>
+   remark #25015: Estimate of max trip count of loop=3
+LOOP END
+
+LOOP BEGIN at FastSEPNMF.c(258,5)
+   remark #15300: LOOP WAS VECTORIZED
+   remark #15442: entire loop may be executed in remainder
+   remark #15448: unmasked aligned unit stride loads: 1 
+   remark #15475: --- begin vector cost summary ---
+   remark #15476: scalar cost: 8 
+   remark #15477: vector cost: 4.250 
+   remark #15478: estimated potential speedup: 1.800 
+   remark #15488: --- end vector cost summary ---
+LOOP END
+
+LOOP BEGIN at FastSEPNMF.c(258,5)
+<Remainder loop for vectorization>
+LOOP END
+===========================================================================
+
+Begin optimization report for: normalize_img(float *, long, int)
+
+    Report from: OpenMP optimizations [openmp]
+
+OpenMP Construct at FastSEPNMF.c(272,2)
+remark #16200: OpenMP DEFINED LOOP WAS PARALLELIZED
+
+    Report from: Loop nest & Vector optimizations [loop, vec]
+
+
+LOOP BEGIN at FastSEPNMF.c(273,2)
+   remark #25084: Preprocess Loopnests: Moving Out Store    [ FastSEPNMF.c(274,3) ]
+   remark #25084: Preprocess Loopnests: Moving Out Store    [ FastSEPNMF.c(279,3) ]
+   remark #15542: loop was not vectorized: inner loop was already vectorized
+
+   LOOP BEGIN at FastSEPNMF.c(276,9)
+   <Peeled loop for vectorization>
+      remark #25015: Estimate of max trip count of loop=3
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(276,9)
+      remark #25084: Preprocess Loopnests: Moving Out Store    [ FastSEPNMF.c(277,12) ]
+      remark #15300: LOOP WAS VECTORIZED
+      remark #15442: entire loop may be executed in remainder
+      remark #15448: unmasked aligned unit stride loads: 1 
+      remark #15475: --- begin vector cost summary ---
+      remark #15476: scalar cost: 5 
+      remark #15477: vector cost: 1.250 
+      remark #15478: estimated potential speedup: 3.480 
+      remark #15488: --- end vector cost summary ---
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(276,9)
+   <Remainder loop for vectorization>
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(280,3)
+   <Peeled loop for vectorization>
+      remark #25015: Estimate of max trip count of loop=3
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(280,3)
+      remark #25084: Preprocess Loopnests: Moving Out Store    [ FastSEPNMF.c(280,25) ]
+      remark #15300: LOOP WAS VECTORIZED
+      remark #15442: entire loop may be executed in remainder
+      remark #15448: unmasked aligned unit stride loads: 1 
+      remark #15449: unmasked aligned unit stride stores: 1 
+      remark #15475: --- begin vector cost summary ---
+      remark #15476: scalar cost: 7 
+      remark #15477: vector cost: 1.500 
+      remark #15478: estimated potential speedup: 4.320 
+      remark #15488: --- end vector cost summary ---
+   LOOP END
+
+   LOOP BEGIN at FastSEPNMF.c(280,3)
+   <Remainder loop for vectorization>
+   LOOP END
+LOOP END
+===========================================================================

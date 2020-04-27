@@ -1,11 +1,17 @@
 
-CC = gcc
+CC = icc
+#CC = gcc
 NVCC = nvcc
 
 LIBRARIES := -lm 
 LIBS = -L/optshared/cuda-10.0/lib64 -lcudart -lm 
 
-OPT := -O3 -march=native -ftree-vectorizer-verbose=6 -ffast-math -ftree-parallelize-loops=3
+#OPT := -O3 -march=native -ftree-vectorizer-verbose=6 -ffast-math -ftree-parallelize-loops=3
+#gcc
+#OPT := -O3 -mavx -ftree-vectorizer-verbose=6 -ffast-math -fopenmp#-ftree-parallelize-loops=3
+#OPT := -O3 -mavx -ftree-vectorizer-verbose=6 -ffast-math -ftree-parallelize-loops=3 
+#icc
+OPT := -O3 -restrict -qopt-report-phase=vec,loop,openmp -qopt-report=3 -qopenmp
 
 CFLAGS     = -O3
 NVCFLAGS   = $(CFLAGS) -Wno-deprecated-gpu-targets

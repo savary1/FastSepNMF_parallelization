@@ -59,9 +59,9 @@ int main (int argc, char* argv[]){
 	long int *b_pos = (long int *) malloc (image_size * sizeof(long int));	   	//valid positions of normM that meet (a-normM)/a <= 1e-6
 	float *v = (float *) malloc (bands * sizeof(float));						//used to update normM in every iteration                                                    	//float auxiliary array 
     long int J[endmembers];                                                 	//selected endmembers positions in input image
-
 	
-    Load_Image(argv[1], image, cols, rows, bands, datatype);
+	Load_Image_imagenes(argv[1], image, cols, rows, bands, datatype);
+	
 	/**************************** #END# - Load Image and allocate memory*******************************/
 	
 	/**************************  CUDA  **********************************/
@@ -79,7 +79,6 @@ int main (int argc, char* argv[]){
     /**************************** #INIT# - Normalize image****************************************/
 	gettimeofday(&t1,NULL);
     if (normalize == 1){
-        //normalize_img(image, image_size, bands);   
 		normalize_imgC(image, image_size, bands, image_c, rows, normM_c, normM, normM1);
     }
 	else{
@@ -141,7 +140,7 @@ int main (int argc, char* argv[]){
 		
 		//U(:,i) = M(:,b);  //MIRAR SI SE PUEDEN HACER LOS ACCESOS A MEMORIA ADYACENTES
 		for(j = 0 ; j < bands; j++){
-			U[i*bands + j] = image[J[i] * bands + j];
+			U[i*bands + j] = image[J[i] + j*image_size];
 		}
 		
 		//U(:,i) = U(:,i) - U(:,j)*(U(:,j)'*U(:,i));
@@ -195,14 +194,6 @@ int main (int argc, char* argv[]){
 		
 		actualizar_normM(v, bands, normM, image_size, i, rows, v_c, image_c, normM_c);
 		
-		/*#pragma omp parallel for
-		for(j = 0; j < image_size; j++){
-			faux = 0;
-			for(k = 0; k < bands; k++){//INTENTAR HACER ACCESOS ADYACENTES
-				faux += v[k] * image[j*bands + k];
-			}
-			normM[j] -= faux * faux;
-		}*/		
 		
 		gettimeofday(&t2,NULL);
 		t_sec  = (float)  (t2.tv_sec - t1.tv_sec);

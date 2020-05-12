@@ -1,4 +1,4 @@
-__kernel void update_normM(__global float* restrict clImage, __global float* restrict clV, __global float* restrict clNormM, int bands, int image_size){
+__kernel void update_normM(__global float* restrict clImage, __global float* restrict clV, __global float* restrict clNormM, int bands, int image_size) {
     unsigned int id = get_group_id(0) * get_local_size(0) + get_local_id(0);
     int k;
 
@@ -14,7 +14,7 @@ __kernel void update_normM(__global float* restrict clImage, __global float* res
 
 
 
-__kernel void normalize_img(__global float* restrict clImage, __global float* restrict clNormM, int image_size, int bands){
+__kernel void normalize_img(__global float* restrict clImage, __global float* restrict clNormM, int image_size, int bands) {
     unsigned int id = get_group_id(0) * get_local_size(0) + get_local_id(0);
     int j;
     float imageNewVal, normAcum = 0, normAux = 0;
@@ -32,4 +32,18 @@ __kernel void normalize_img(__global float* restrict clImage, __global float* re
         }
         clNormM[id] = normAcum;
     }
+}
+
+
+
+__kernel void initializeNormM(__global float* restrict clImage, __global float* restrict clNormM, int image_size, int bands) {
+    unsigned int id = get_group_id(0) * get_local_size(0) + get_local_id(0);
+    float normAcum = 0;
+    int j;
+    if(id < image_size){
+        for(j = 0; j < bands; j++){
+        normAcum += clImage[j*image_size + id] * clImage[j*image_size + id];
+    }
+    clNormM[id] = normAcum;
+    }    
 }

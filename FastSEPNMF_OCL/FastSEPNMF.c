@@ -35,7 +35,7 @@ int main (int argc, char* argv[]){
 	cl_context clContext;
 	cl_command_queue clQueue;
 	cl_program clProgram;
-	cl_kernel updateNormMKernel, normalizeImgKernel;
+	cl_kernel updateNormMKernel, normalizeImgKernel, initializeNormM;
 	cl_mem clImage, clV, clNormM;
 
     if (argc != 5){
@@ -156,6 +156,34 @@ int main (int argc, char* argv[]){
 		exit_if_OpenCL_fail(status, "Error mapping normM to the host");
 		clFinish(clQueue);   
     }
+	else{
+		initializeNormM = clCreateKernel(clProgram, "initializeNormM", &status);
+		exit_if_OpenCL_fail(status, "Error creating initializeNormM kernel");
+
+		status  = clSetKernelArg(initializeNormM, 0, sizeof(cl_mem), &clImage);
+		exit_if_OpenCL_fail(status, "Error setting image as parameter in the device");
+		status  = clSetKernelArg(initializeNormM, 1, sizeof(cl_mem), &clNormM);
+		exit_if_OpenCL_fail(status, "Error setting normM as parameter in the device");
+		status  = clSetKernelArg(initializeNormM, 2, sizeof(int), &image_size);
+		exit_if_OpenCL_fail(status, "Error setting image_size as parameter in the device");
+		status  = clSetKernelArg(initializeNormM, 3, sizeof(int), &bands);
+		exit_if_OpenCL_fail(status, "Error setting bands as parameter in the device");
+
+		gettimeofday(&t3,NULL);
+		status = clEnqueueNDRangeKernel(clQueue, initializeNormM, 1, NULL, &globalsize, &localSize, 0, NULL, NULL);
+		exit_if_OpenCL_fail(status, "Error executing kernel");
+		clFinish(clQueue);
+		gettimeofday(&t4,NULL);
+		t_sec  = (float)  (t4.tv_sec - t3.tv_sec);
+		t_usec = (float)  (t4.tv_usec - t3.tv_usec);
+		tNormKernel = t_sec + t_usec/1.0e+6;
+
+		// status = clEnqueueReadBuffer(clQueue, clNormM, CL_TRUE, 0, image_size * sizeof(float), normM, 0, NULL, NULL);
+		// exit_if_OpenCL_fail(status, "Error reading normM from the device");
+		normM = (float *) clEnqueueMapBuffer(clQueue, clNormM, CL_TRUE, CL_MAP_READ, 0, image_size * sizeof(float), 0, NULL, NULL, &status);
+		exit_if_OpenCL_fail(status, "Error mapping normM to the host");
+		clFinish(clQueue);
+	}
 
 	//Este for se puede separa en 2, el de fuera de longitud image size y el de dentro vectorizarlo
 	for(i = 0; i < image_size; i++){

@@ -46,8 +46,6 @@ void readHeader(char* filename, int *cols, int *rows, int *numBands, int *dataTy
 		fseek(fp,0L,SEEK_SET);
 
 		while(fgets(line, 200, fp)!='\0'){
-
-			//printf(" %s\n", line);
 			if(strstr(line, "samples")!=NULL){
 				ptr=strrchr(line, ' ');
 				ptr= ptr+1;
@@ -69,104 +67,14 @@ void readHeader(char* filename, int *cols, int *rows, int *numBands, int *dataTy
 				*dataType=atoi(ptr);
 			}
 
-		}//while
-		fclose(fp);
-	}//else 
-}
-
-
-//load the image "filename" and do a cast over the original datatype into float datatype. Thus, it can operate with data inside the image.
-void Load_Image(char* filename, float *imageVector, int cols, int rows, int numBands, int dataType){
-
-	FILE *fp;
-	short int *tipo_short_int;
-	double *tipo_double;
-	float *tipo_float, value;
-	long int i, j, h, k, pixelStart;
-	int lines_samples=rows*cols;
-
-	// open file "filename" only read
-	if ((fp=fopen(filename,"r"))==NULL){
-		printf("file not found");
-		exit(1);
-	}
-	else{
-		fseek(fp,0L,SEEK_SET);
-		h = 0;
-		//describe datatype inside the image and cast the datatype into float. Thus, the result image will have float datatype inside.
-		switch(dataType)
-		{
-			//short int datatype 
-				case 2:
-					tipo_short_int = (short int *) malloc (lines_samples*numBands * sizeof(short int));
-					fread(tipo_short_int,1,(sizeof(short int)*lines_samples*numBands),fp);
-					//Convert image data datatype to double
-					#pragma loop count min(1024)					
-					for(i=0; i<numBands; i+=1){
-						for(j= 0; j < rows; j+=1 ){
-							for(k = 0; k < cols; k+=1){
-								value=(float)tipo_short_int[h];
-								if(value<0){
-									imageVector[numBands*(h%lines_samples) + i]=0.0;
-								}else{
-									imageVector[numBands*(h%lines_samples) + i]=value;
-								}
-								h++;
-							}
-						}
-					}
-					free(tipo_short_int);
-					break;
-			//float datatype
-				case 4:
-					//printf("Leyendo tipo float\n");
-					tipo_float = (float *) malloc (lines_samples*numBands * sizeof(float));
-					fread(tipo_float,1,(sizeof(float)*lines_samples*numBands),fp);
-					#pragma loop count min(1024)
-					for(i=0; i<numBands; i+=1){
-						for(j= 0; j < rows; j+=1 ){
-							for(k = 0; k < cols; k+=1){
-								value=tipo_float[h];
-								if(value<0)
-									imageVector[numBands*(h%lines_samples) + i]=0.0;
-								else
-									imageVector[numBands*(h%lines_samples) + i]=value;
-								h++;
-							}
-						}
-					}
-					free(tipo_float);
-					break;
-		//double datatype
-				case 5:
-					//printf("Leyendo tipo double\n");
-					tipo_double = (double *) malloc (lines_samples*numBands * sizeof(double));
-					fread(tipo_double,1,(sizeof(double)*lines_samples*numBands),fp);
-					#pragma loop count min(1024)
-					for(i=0; i<numBands; i+=1){
-						for(j= 0; j < rows; j+=1 ){
-							for(k = 0; k < cols; k+=1){
-								value=(float)tipo_double[h];
-								if(value<0)
-									imageVector[numBands*(h%lines_samples) + i]=0.0;                				
-								else
-									imageVector[numBands*(h%lines_samples) + i]=value;
-								h++;
-							}
-						}
-					}
-					free (tipo_double);
-					break;
 		}
+		fclose(fp);
 	}
-
-	//close the file 
-	fclose(fp);
 }
+
 
 // Leer la la entrada por imagenes
-
-void Load_Image_imagenes(char* filename, float *imageVector, int cols, int rows, int numBands, int dataType){
+void LoadImageImagenes(char* filename, float *image_vector, int cols, int rows, int num_bands, int data_type){
 
 		FILE *fp;
     	short int *tipo_short_int;
@@ -183,19 +91,19 @@ void Load_Image_imagenes(char* filename, float *imageVector, int cols, int rows,
     	else{
         	fseek(fp,0L,SEEK_SET);
         	//describe datatype inside the image and cast the datatype into float. Thus, the result image will have float datatype inside.
-        	switch(dataType) 
+        	switch(data_type) 
 			{	    		
 				case 2: //short int datatype 
-					tipo_short_int = (short int *) malloc (lines_samples*numBands * sizeof(short int));
-					fread(tipo_short_int,1,(sizeof(short int)*lines_samples*numBands),fp);
+					tipo_short_int = (short int *) malloc (lines_samples*num_bands * sizeof(short int));
+					fread(tipo_short_int,1,(sizeof(short int)*lines_samples*num_bands),fp);
 					//Convert image data datatype to float
-					for(j=0; j< numBands; j+=1){
+					for(j=0; j< num_bands; j+=1){
 						for(i=0; i< lines_samples; i+=1){
 							value=(float)tipo_short_int[j*lines_samples + i];
 							if(value>0)
-								imageVector[j*lines_samples + i]=value;
+								image_vector[j*lines_samples + i]=value;
 							else
-								imageVector[j*lines_samples + i]=0.0;
+								image_vector[j*lines_samples + i]=0.0;
 					
 						}
 					}
@@ -203,30 +111,30 @@ void Load_Image_imagenes(char* filename, float *imageVector, int cols, int rows,
 					break;
 			
 				case 4: //float datatype
-					tipo_float = (float *) malloc (lines_samples*numBands * sizeof(float));
-					fread(tipo_float,1,(sizeof(float)*lines_samples*numBands),fp);
-					for(j=0; j< numBands; j+=1){
+					tipo_float = (float *) malloc (lines_samples*num_bands * sizeof(float));
+					fread(tipo_float,1,(sizeof(float)*lines_samples*num_bands),fp);
+					for(j=0; j< num_bands; j+=1){
 						for(i=0; i< lines_samples; i+=1){
 							value=tipo_float[j*lines_samples + i];
 							if(value>0)
-								imageVector[j*lines_samples + i]=value;
+								image_vector[j*lines_samples + i]=value;
 							else
-								imageVector[j*lines_samples + i]=0.0;
+								image_vector[j*lines_samples + i]=0.0;
 						}
 					}
 					free(tipo_float);
 					break;		
             	
 				case 5://double datatype
-					tipo_double = (double *) malloc (lines_samples*numBands * sizeof(double));
-                	fread(tipo_double,1,(sizeof(double)*lines_samples*numBands),fp);
-					for(j=0; j< numBands; j+=1){
+					tipo_double = (double *) malloc (lines_samples*num_bands * sizeof(double));
+                	fread(tipo_double,1,(sizeof(double)*lines_samples*num_bands),fp);
+					for(j=0; j< num_bands; j+=1){
 						for(i=0; i< lines_samples; i+=1){                			
 							value=(float)tipo_double[j*lines_samples + i];
 							if(value>0)
-                						imageVector[j*lines_samples + i]=value;
+                				image_vector[j*lines_samples + i]=value;
 							else
-								imageVector[j*lines_samples + i]=0.0;				
+								image_vector[j*lines_samples + i]=0.0;				
 						}
 					}
                 	free (tipo_double);

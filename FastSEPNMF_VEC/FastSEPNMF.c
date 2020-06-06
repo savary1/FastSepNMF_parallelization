@@ -176,7 +176,7 @@ int main (int argc, char* argv[]) {
 
 	printf("Endmembers:\n");
 	for(i = 0; i < endmembers; i++) {
-		printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld) \t- Valor: %f\n", i, J[i],(J[i] / cols),(J[i] % cols));
+		printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld) \n", i, J[i],(J[i] / cols),(J[i] % cols));
 	}
 
 	printf("Total time:	\t%.5f segundos\n", secs_end);

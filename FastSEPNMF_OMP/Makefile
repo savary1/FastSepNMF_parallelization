@@ -13,13 +13,13 @@ LIBRARIES := -lm
 #GCC_novec
 #OPT := -O0 -fno-tree-vectorize
 #GCC_autovec
-OPT := -O3 -mavx -ftree-vectorizer-verbose=6 -ffast-math -fopenmp
+#OPT := -O3 -mavx -ftree-vectorizer-verbose=6 -ffast-math -fopenmp
 #ICC_novec
 #OPT := -O0 -restrict -no-vec
 #ICC_autovec
-#OPT := -O3 -restrict -qopt-report-phase=vec,loop,openmp -qopt-report=3 -qopenmp
+OPT := -O3 -restrict -qopt-report-phase=vec,loop,openmp -qopt-report=3 -qopenmp
 
-CC = gcc
+CC = icc
 
 ################################################################################
 

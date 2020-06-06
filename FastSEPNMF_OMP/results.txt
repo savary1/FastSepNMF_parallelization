@@ -1,0 +1,870 @@
+/n/n ############# Ejecución número 1 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.70892 segundos
+T norm:			0.02788 segundos
+T square loop:		0.64526 segundos
+/n/n ############# Ejecución número 2 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.70553 segundos
+T norm:			0.02486 segundos
+T square loop:		0.64455 segundos
+/n/n ############# Ejecución número 3 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.49681 segundos
+T norm:			0.02754 segundos
+T square loop:		0.43381 segundos
+/n/n ############# Ejecución número 4 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.70889 segundos
+T norm:			0.02803 segundos
+T square loop:		0.64517 segundos
+/n/n ############# Ejecución número 5 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.26422 segundos
+T norm:			0.01445 segundos
+T square loop:		0.21415 segundos
+/n/n ############# Ejecución número 6 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.26287 segundos
+T norm:			0.01334 segundos
+T square loop:		0.21396 segundos
+/n/n ############# Ejecución número 7 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.67123 segundos
+T norm:			0.01968 segundos
+T square loop:		0.61534 segundos
+/n/n ############# Ejecución número 8 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.27037 segundos
+T norm:			0.01324 segundos
+T square loop:		0.22168 segundos
+/n/n ############# Ejecución número 9 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.66536 segundos
+T norm:			0.02388 segundos
+T square loop:		0.60590 segundos
+/n/n ############# Ejecución número 10 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.27064 segundos
+T norm:			0.01454 segundos
+T square loop:		0.22042 segundos
+/n/n ############# Ejecución número 1 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.71732 segundos
+T norm:			0.02811 segundos
+T square loop:		0.65351 segundos
+/n/n ############# Ejecución número 2 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.62684 segundos
+T norm:			0.02651 segundos
+T square loop:		0.57750 segundos
+/n/n ############# Ejecución número 3 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.65808 segundos
+T norm:			0.02387 segundos
+T square loop:		0.60018 segundos
+/n/n ############# Ejecución número 4 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.59064 segundos
+T norm:			0.02696 segundos
+T square loop:		0.53745 segundos
+/n/n ############# Ejecución número 5 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.59847 segundos
+T norm:			0.02637 segundos
+T square loop:		0.53648 segundos
+/n/n ############# Ejecución número 6 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.27038 segundos
+T norm:			0.01240 segundos
+T square loop:		0.22256 segundos
+/n/n ############# Ejecución número 7 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.27159 segundos
+T norm:			0.01361 segundos
+T square loop:		0.22249 segundos
+/n/n ############# Ejecución número 8 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.27426 segundos
+T norm:			0.01553 segundos
+T square loop:		0.22305 segundos
+/n/n ############# Ejecución número 9 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.27909 segundos
+T norm:			0.01459 segundos
+T square loop:		0.23270 segundos
+/n/n ############# Ejecución número 10 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	- Valor: 0.000000
+1 	- 450110 	- Coordenadas: (600,110) 	- Valor: 0.000000
+2 	- 177995 	- Coordenadas: (237,245) 	- Valor: 0.000000
+3 	- 178124 	- Coordenadas: (237,374) 	- Valor: 0.000000
+4 	- 438190 	- Coordenadas: (584,190) 	- Valor: 0.000000
+5 	- 423977 	- Coordenadas: (565,227) 	- Valor: 0.000000
+6 	- 473773 	- Coordenadas: (631,523) 	- Valor: 0.000000
+7 	- 20090 	- Coordenadas: (26,590) 	- Valor: 0.000000
+8 	- 63998 	- Coordenadas: (85,248) 	- Valor: 0.000000
+9 	- 124332 	- Coordenadas: (165,582) 	- Valor: 0.000000
+10 	- 108917 	- Coordenadas: (145,167) 	- Valor: 0.000000
+11 	- 60484 	- Coordenadas: (80,484) 	- Valor: 0.000000
+12 	- 194893 	- Coordenadas: (259,643) 	- Valor: 0.000000
+13 	- 136152 	- Coordenadas: (181,402) 	- Valor: 0.000000
+14 	- 30597 	- Coordenadas: (40,597) 	- Valor: 0.000000
+15 	- 325198 	- Coordenadas: (433,448) 	- Valor: 0.000000
+16 	- 349311 	- Coordenadas: (465,561) 	- Valor: 0.000000
+17 	- 220385 	- Coordenadas: (293,635) 	- Valor: 0.000000
+18 	- 69821 	- Coordenadas: (93,71) 	- Valor: 0.000000
+19 	- 289323 	- Coordenadas: (385,573) 	- Valor: 0.000000
+20 	- 273780 	- Coordenadas: (365,30) 	- Valor: 0.000000
+21 	- 341775 	- Coordenadas: (455,525) 	- Valor: 0.000000
+22 	- 441826 	- Coordenadas: (589,76) 	- Valor: 0.000000
+23 	- 206942 	- Coordenadas: (275,692) 	- Valor: 0.000000
+24 	- 78699 	- Coordenadas: (104,699) 	- Valor: 0.000000
+25 	- 248595 	- Coordenadas: (331,345) 	- Valor: 0.000000
+26 	- 292002 	- Coordenadas: (389,252) 	- Valor: 0.000000
+27 	- 176566 	- Coordenadas: (235,316) 	- Valor: 0.000000
+28 	- 105228 	- Coordenadas: (140,228) 	- Valor: 0.000000
+29 	- 442277 	- Coordenadas: (589,527) 	- Valor: 0.000000
+Threads used: 28
+Total time:		0.46346 segundos
+T norm:			0.03963 segundos
+T square loop:		0.39678 segundos
+/n/n ############# Ejecución número 1 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	1 	- 450110 	- Coordenadas: (600,110) 	2 	- 177995 	- Coordenadas: (237,245) 	3 	- 178124 	- Coordenadas: (237,374) 	4 	- 438190 	- Coordenadas: (584,190) 	5 	- 423977 	- Coordenadas: (565,227) 	6 	- 473773 	- Coordenadas: (631,523) 	7 	- 20090 	- Coordenadas: (26,590) 	8 	- 63998 	- Coordenadas: (85,248) 	9 	- 124332 	- Coordenadas: (165,582) 	10 	- 108917 	- Coordenadas: (145,167) 	11 	- 60484 	- Coordenadas: (80,484) 	12 	- 194893 	- Coordenadas: (259,643) 	13 	- 136152 	- Coordenadas: (181,402) 	14 	- 30597 	- Coordenadas: (40,597) 	15 	- 325198 	- Coordenadas: (433,448) 	16 	- 349311 	- Coordenadas: (465,561) 	17 	- 220385 	- Coordenadas: (293,635) 	18 	- 69821 	- Coordenadas: (93,71) 	19 	- 289323 	- Coordenadas: (385,573) 	20 	- 273780 	- Coordenadas: (365,30) 	21 	- 341775 	- Coordenadas: (455,525) 	22 	- 441826 	- Coordenadas: (589,76) 	23 	- 206942 	- Coordenadas: (275,692) 	24 	- 78699 	- Coordenadas: (104,699) 	25 	- 248595 	- Coordenadas: (331,345) 	26 	- 292002 	- Coordenadas: (389,252) 	27 	- 176566 	- Coordenadas: (235,316) 	28 	- 105228 	- Coordenadas: (140,228) 	29 	- 442277 	- Coordenadas: (589,527) 	Threads used: 28
+Total time:		0.64821 segundos
+T norm:			0.02720 segundos
+T square loop:		0.58554 segundos
+/n/n ############# Ejecución número 2 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	1 	- 450110 	- Coordenadas: (600,110) 	2 	- 177995 	- Coordenadas: (237,245) 	3 	- 178124 	- Coordenadas: (237,374) 	4 	- 438190 	- Coordenadas: (584,190) 	5 	- 423977 	- Coordenadas: (565,227) 	6 	- 473773 	- Coordenadas: (631,523) 	7 	- 20090 	- Coordenadas: (26,590) 	8 	- 63998 	- Coordenadas: (85,248) 	9 	- 124332 	- Coordenadas: (165,582) 	10 	- 108917 	- Coordenadas: (145,167) 	11 	- 60484 	- Coordenadas: (80,484) 	12 	- 194893 	- Coordenadas: (259,643) 	13 	- 136152 	- Coordenadas: (181,402) 	14 	- 30597 	- Coordenadas: (40,597) 	15 	- 325198 	- Coordenadas: (433,448) 	16 	- 349311 	- Coordenadas: (465,561) 	17 	- 220385 	- Coordenadas: (293,635) 	18 	- 69821 	- Coordenadas: (93,71) 	19 	- 289323 	- Coordenadas: (385,573) 	20 	- 273780 	- Coordenadas: (365,30) 	21 	- 341775 	- Coordenadas: (455,525) 	22 	- 441826 	- Coordenadas: (589,76) 	23 	- 206942 	- Coordenadas: (275,692) 	24 	- 78699 	- Coordenadas: (104,699) 	25 	- 248595 	- Coordenadas: (331,345) 	26 	- 292002 	- Coordenadas: (389,252) 	27 	- 176566 	- Coordenadas: (235,316) 	28 	- 105228 	- Coordenadas: (140,228) 	29 	- 442277 	- Coordenadas: (589,527) 	Threads used: 28
+Total time:		0.58437 segundos
+T norm:			0.02665 segundos
+T square loop:		0.52744 segundos
+/n/n ############# Ejecución número 3 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	1 	- 450110 	- Coordenadas: (600,110) 	2 	- 177995 	- Coordenadas: (237,245) 	3 	- 178124 	- Coordenadas: (237,374) 	4 	- 438190 	- Coordenadas: (584,190) 	5 	- 423977 	- Coordenadas: (565,227) 	6 	- 473773 	- Coordenadas: (631,523) 	7 	- 20090 	- Coordenadas: (26,590) 	8 	- 63998 	- Coordenadas: (85,248) 	9 	- 124332 	- Coordenadas: (165,582) 	10 	- 108917 	- Coordenadas: (145,167) 	11 	- 60484 	- Coordenadas: (80,484) 	12 	- 194893 	- Coordenadas: (259,643) 	13 	- 136152 	- Coordenadas: (181,402) 	14 	- 30597 	- Coordenadas: (40,597) 	15 	- 325198 	- Coordenadas: (433,448) 	16 	- 349311 	- Coordenadas: (465,561) 	17 	- 220385 	- Coordenadas: (293,635) 	18 	- 69821 	- Coordenadas: (93,71) 	19 	- 289323 	- Coordenadas: (385,573) 	20 	- 273780 	- Coordenadas: (365,30) 	21 	- 341775 	- Coordenadas: (455,525) 	22 	- 441826 	- Coordenadas: (589,76) 	23 	- 206942 	- Coordenadas: (275,692) 	24 	- 78699 	- Coordenadas: (104,699) 	25 	- 248595 	- Coordenadas: (331,345) 	26 	- 292002 	- Coordenadas: (389,252) 	27 	- 176566 	- Coordenadas: (235,316) 	28 	- 105228 	- Coordenadas: (140,228) 	29 	- 442277 	- Coordenadas: (589,527) 	Threads used: 28
+Total time:		0.55632 segundos
+T norm:			0.02361 segundos
+T square loop:		0.50579 segundos
+/n/n ############# Ejecución número 4 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	1 	- 450110 	- Coordenadas: (600,110) 	2 	- 177995 	- Coordenadas: (237,245) 	3 	- 178124 	- Coordenadas: (237,374) 	4 	- 438190 	- Coordenadas: (584,190) 	5 	- 423977 	- Coordenadas: (565,227) 	6 	- 473773 	- Coordenadas: (631,523) 	7 	- 20090 	- Coordenadas: (26,590) 	8 	- 63998 	- Coordenadas: (85,248) 	9 	- 124332 	- Coordenadas: (165,582) 	10 	- 108917 	- Coordenadas: (145,167) 	11 	- 60484 	- Coordenadas: (80,484) 	12 	- 194893 	- Coordenadas: (259,643) 	13 	- 136152 	- Coordenadas: (181,402) 	14 	- 30597 	- Coordenadas: (40,597) 	15 	- 325198 	- Coordenadas: (433,448) 	16 	- 349311 	- Coordenadas: (465,561) 	17 	- 220385 	- Coordenadas: (293,635) 	18 	- 69821 	- Coordenadas: (93,71) 	19 	- 289323 	- Coordenadas: (385,573) 	20 	- 273780 	- Coordenadas: (365,30) 	21 	- 341775 	- Coordenadas: (455,525) 	22 	- 441826 	- Coordenadas: (589,76) 	23 	- 206942 	- Coordenadas: (275,692) 	24 	- 78699 	- Coordenadas: (104,699) 	25 	- 248595 	- Coordenadas: (331,345) 	26 	- 292002 	- Coordenadas: (389,252) 	27 	- 176566 	- Coordenadas: (235,316) 	28 	- 105228 	- Coordenadas: (140,228) 	29 	- 442277 	- Coordenadas: (589,527) 	Threads used: 28
+Total time:		0.70481 segundos
+T norm:			0.02690 segundos
+T square loop:		0.64230 segundos
+/n/n ############# Ejecución número 5 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	1 	- 450110 	- Coordenadas: (600,110) 	2 	- 177995 	- Coordenadas: (237,245) 	3 	- 178124 	- Coordenadas: (237,374) 	4 	- 438190 	- Coordenadas: (584,190) 	5 	- 423977 	- Coordenadas: (565,227) 	6 	- 473773 	- Coordenadas: (631,523) 	7 	- 20090 	- Coordenadas: (26,590) 	8 	- 63998 	- Coordenadas: (85,248) 	9 	- 124332 	- Coordenadas: (165,582) 	10 	- 108917 	- Coordenadas: (145,167) 	11 	- 60484 	- Coordenadas: (80,484) 	12 	- 194893 	- Coordenadas: (259,643) 	13 	- 136152 	- Coordenadas: (181,402) 	14 	- 30597 	- Coordenadas: (40,597) 	15 	- 325198 	- Coordenadas: (433,448) 	16 	- 349311 	- Coordenadas: (465,561) 	17 	- 220385 	- Coordenadas: (293,635) 	18 	- 69821 	- Coordenadas: (93,71) 	19 	- 289323 	- Coordenadas: (385,573) 	20 	- 273780 	- Coordenadas: (365,30) 	21 	- 341775 	- Coordenadas: (455,525) 	22 	- 441826 	- Coordenadas: (589,76) 	23 	- 206942 	- Coordenadas: (275,692) 	24 	- 78699 	- Coordenadas: (104,699) 	25 	- 248595 	- Coordenadas: (331,345) 	26 	- 292002 	- Coordenadas: (389,252) 	27 	- 176566 	- Coordenadas: (235,316) 	28 	- 105228 	- Coordenadas: (140,228) 	29 	- 442277 	- Coordenadas: (589,527) 	Threads used: 28
+Total time:		0.64519 segundos
+T norm:			0.02456 segundos
+T square loop:		0.58503 segundos
+/n/n ############# Ejecución número 6 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	1 	- 450110 	- Coordenadas: (600,110) 	2 	- 177995 	- Coordenadas: (237,245) 	3 	- 178124 	- Coordenadas: (237,374) 	4 	- 438190 	- Coordenadas: (584,190) 	5 	- 423977 	- Coordenadas: (565,227) 	6 	- 473773 	- Coordenadas: (631,523) 	7 	- 20090 	- Coordenadas: (26,590) 	8 	- 63998 	- Coordenadas: (85,248) 	9 	- 124332 	- Coordenadas: (165,582) 	10 	- 108917 	- Coordenadas: (145,167) 	11 	- 60484 	- Coordenadas: (80,484) 	12 	- 194893 	- Coordenadas: (259,643) 	13 	- 136152 	- Coordenadas: (181,402) 	14 	- 30597 	- Coordenadas: (40,597) 	15 	- 325198 	- Coordenadas: (433,448) 	16 	- 349311 	- Coordenadas: (465,561) 	17 	- 220385 	- Coordenadas: (293,635) 	18 	- 69821 	- Coordenadas: (93,71) 	19 	- 289323 	- Coordenadas: (385,573) 	20 	- 273780 	- Coordenadas: (365,30) 	21 	- 341775 	- Coordenadas: (455,525) 	22 	- 441826 	- Coordenadas: (589,76) 	23 	- 206942 	- Coordenadas: (275,692) 	24 	- 78699 	- Coordenadas: (104,699) 	25 	- 248595 	- Coordenadas: (331,345) 	26 	- 292002 	- Coordenadas: (389,252) 	27 	- 176566 	- Coordenadas: (235,316) 	28 	- 105228 	- Coordenadas: (140,228) 	29 	- 442277 	- Coordenadas: (589,527) 	Threads used: 28
+Total time:		0.63582 segundos
+T norm:			0.02424 segundos
+T square loop:		0.58594 segundos
+/n/n ############# Ejecución número 7 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	1 	- 450110 	- Coordenadas: (600,110) 	2 	- 177995 	- Coordenadas: (237,245) 	3 	- 178124 	- Coordenadas: (237,374) 	4 	- 438190 	- Coordenadas: (584,190) 	5 	- 423977 	- Coordenadas: (565,227) 	6 	- 473773 	- Coordenadas: (631,523) 	7 	- 20090 	- Coordenadas: (26,590) 	8 	- 63998 	- Coordenadas: (85,248) 	9 	- 124332 	- Coordenadas: (165,582) 	10 	- 108917 	- Coordenadas: (145,167) 	11 	- 60484 	- Coordenadas: (80,484) 	12 	- 194893 	- Coordenadas: (259,643) 	13 	- 136152 	- Coordenadas: (181,402) 	14 	- 30597 	- Coordenadas: (40,597) 	15 	- 325198 	- Coordenadas: (433,448) 	16 	- 349311 	- Coordenadas: (465,561) 	17 	- 220385 	- Coordenadas: (293,635) 	18 	- 69821 	- Coordenadas: (93,71) 	19 	- 289323 	- Coordenadas: (385,573) 	20 	- 273780 	- Coordenadas: (365,30) 	21 	- 341775 	- Coordenadas: (455,525) 	22 	- 441826 	- Coordenadas: (589,76) 	23 	- 206942 	- Coordenadas: (275,692) 	24 	- 78699 	- Coordenadas: (104,699) 	25 	- 248595 	- Coordenadas: (331,345) 	26 	- 292002 	- Coordenadas: (389,252) 	27 	- 176566 	- Coordenadas: (235,316) 	28 	- 105228 	- Coordenadas: (140,228) 	29 	- 442277 	- Coordenadas: (589,527) 	Threads used: 28
+Total time:		0.54818 segundos
+T norm:			0.02489 segundos
+T square loop:		0.48947 segundos
+/n/n ############# Ejecución número 8 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	1 	- 450110 	- Coordenadas: (600,110) 	2 	- 177995 	- Coordenadas: (237,245) 	3 	- 178124 	- Coordenadas: (237,374) 	4 	- 438190 	- Coordenadas: (584,190) 	5 	- 423977 	- Coordenadas: (565,227) 	6 	- 473773 	- Coordenadas: (631,523) 	7 	- 20090 	- Coordenadas: (26,590) 	8 	- 63998 	- Coordenadas: (85,248) 	9 	- 124332 	- Coordenadas: (165,582) 	10 	- 108917 	- Coordenadas: (145,167) 	11 	- 60484 	- Coordenadas: (80,484) 	12 	- 194893 	- Coordenadas: (259,643) 	13 	- 136152 	- Coordenadas: (181,402) 	14 	- 30597 	- Coordenadas: (40,597) 	15 	- 325198 	- Coordenadas: (433,448) 	16 	- 349311 	- Coordenadas: (465,561) 	17 	- 220385 	- Coordenadas: (293,635) 	18 	- 69821 	- Coordenadas: (93,71) 	19 	- 289323 	- Coordenadas: (385,573) 	20 	- 273780 	- Coordenadas: (365,30) 	21 	- 341775 	- Coordenadas: (455,525) 	22 	- 441826 	- Coordenadas: (589,76) 	23 	- 206942 	- Coordenadas: (275,692) 	24 	- 78699 	- Coordenadas: (104,699) 	25 	- 248595 	- Coordenadas: (331,345) 	26 	- 292002 	- Coordenadas: (389,252) 	27 	- 176566 	- Coordenadas: (235,316) 	28 	- 105228 	- Coordenadas: (140,228) 	29 	- 442277 	- Coordenadas: (589,527) 	Threads used: 28
+Total time:		0.50177 segundos
+T norm:			0.03832 segundos
+T square loop:		0.43615 segundos
+/n/n ############# Ejecución número 9 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	1 	- 450110 	- Coordenadas: (600,110) 	2 	- 177995 	- Coordenadas: (237,245) 	3 	- 178124 	- Coordenadas: (237,374) 	4 	- 438190 	- Coordenadas: (584,190) 	5 	- 423977 	- Coordenadas: (565,227) 	6 	- 473773 	- Coordenadas: (631,523) 	7 	- 20090 	- Coordenadas: (26,590) 	8 	- 63998 	- Coordenadas: (85,248) 	9 	- 124332 	- Coordenadas: (165,582) 	10 	- 108917 	- Coordenadas: (145,167) 	11 	- 60484 	- Coordenadas: (80,484) 	12 	- 194893 	- Coordenadas: (259,643) 	13 	- 136152 	- Coordenadas: (181,402) 	14 	- 30597 	- Coordenadas: (40,597) 	15 	- 325198 	- Coordenadas: (433,448) 	16 	- 349311 	- Coordenadas: (465,561) 	17 	- 220385 	- Coordenadas: (293,635) 	18 	- 69821 	- Coordenadas: (93,71) 	19 	- 289323 	- Coordenadas: (385,573) 	20 	- 273780 	- Coordenadas: (365,30) 	21 	- 341775 	- Coordenadas: (455,525) 	22 	- 441826 	- Coordenadas: (589,76) 	23 	- 206942 	- Coordenadas: (275,692) 	24 	- 78699 	- Coordenadas: (104,699) 	25 	- 248595 	- Coordenadas: (331,345) 	26 	- 292002 	- Coordenadas: (389,252) 	27 	- 176566 	- Coordenadas: (235,316) 	28 	- 105228 	- Coordenadas: (140,228) 	29 	- 442277 	- Coordenadas: (589,527) 	Threads used: 28
+Total time:		0.27774 segundos
+T norm:			0.02279 segundos
+T square loop:		0.21948 segundos
+/n/n ############# Ejecución número 10 #############
+
+Lines = 650  Samples = 750  Nbands = 224  Data_type = 4
+Leyendo tipo float
+Endmembers:
+0 	- 164341 	- Coordenadas: (219,91) 	1 	- 450110 	- Coordenadas: (600,110) 	2 	- 177995 	- Coordenadas: (237,245) 	3 	- 178124 	- Coordenadas: (237,374) 	4 	- 438190 	- Coordenadas: (584,190) 	5 	- 423977 	- Coordenadas: (565,227) 	6 	- 473773 	- Coordenadas: (631,523) 	7 	- 20090 	- Coordenadas: (26,590) 	8 	- 63998 	- Coordenadas: (85,248) 	9 	- 124332 	- Coordenadas: (165,582) 	10 	- 108917 	- Coordenadas: (145,167) 	11 	- 60484 	- Coordenadas: (80,484) 	12 	- 194893 	- Coordenadas: (259,643) 	13 	- 136152 	- Coordenadas: (181,402) 	14 	- 30597 	- Coordenadas: (40,597) 	15 	- 325198 	- Coordenadas: (433,448) 	16 	- 349311 	- Coordenadas: (465,561) 	17 	- 220385 	- Coordenadas: (293,635) 	18 	- 69821 	- Coordenadas: (93,71) 	19 	- 289323 	- Coordenadas: (385,573) 	20 	- 273780 	- Coordenadas: (365,30) 	21 	- 341775 	- Coordenadas: (455,525) 	22 	- 441826 	- Coordenadas: (589,76) 	23 	- 206942 	- Coordenadas: (275,692) 	24 	- 78699 	- Coordenadas: (104,699) 	25 	- 248595 	- Coordenadas: (331,345) 	26 	- 292002 	- Coordenadas: (389,252) 	27 	- 176566 	- Coordenadas: (235,316) 	28 	- 105228 	- Coordenadas: (140,228) 	29 	- 442277 	- Coordenadas: (589,527) 	Threads used: 28
+Total time:		0.66321 segundos
+T norm:			0.02633 segundos
+T square loop:		0.60117 segundos

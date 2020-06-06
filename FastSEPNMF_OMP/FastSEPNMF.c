@@ -8,10 +8,7 @@
 #include <omp.h>
 #include "ReadWrite.h"
 
-#define N_THREADS 56
-
 void normalizeImg(float *image, long int image_size, int bands, int num_threads);
-long int maxValExtractArray(float *normM_aux, long int *b_pos, long int b_pos_size);
 float maxVal(float *vector, long int image_size);
 
 int main (int argc, char* argv[]) {
@@ -23,8 +20,8 @@ int main (int argc, char* argv[]) {
 	int endmembers;
 	int normalize;
 	int num_threads;
-	long int i, j, b_pos_size, d, k;
-	float max_val, a, b, faux, faux2;
+	long int i, j, d, k;
+	float max_val, max_min_val, a, b, faux, faux2;
 
 	if (argc != 6) {
 		printf("******************************************************************\n");
@@ -52,9 +49,6 @@ int main (int argc, char* argv[]) {
 	float *image = (float *) calloc (image_size * bands, sizeof(float));    	//input image
 	float *U = (float *) malloc (bands * endmembers * sizeof(float));       	//selected endmembers
 	float *normM = (float *) calloc (image_size, sizeof(float));            	//normalized image
-	float *normM1 = (float *) malloc (image_size * sizeof(float));				//copy of normM
-	float *normMAux = (float *) malloc (image_size * sizeof(float));			//aux array to find the positions that meet (a-normM)/a <= 1e-6
-	long int *b_pos = (long int *) malloc (image_size * sizeof(long int));	   	//valid positions of normM that meet (a-normM)/a <= 1e-6
 	float *v = (float *) malloc (bands * sizeof(float));						//used to update normM in every iteration                                                    	//float auxiliary array
 	long int J[endmembers];                                                 	//selected endmembers positions in input image
 
@@ -70,14 +64,13 @@ int main (int argc, char* argv[]) {
 	}
 
 	omp_set_num_threads(num_threads);
-	#pragma omp parallel shared(normM, normM1, image, image_size, bands) private(i, k)
+	#pragma omp parallel shared(normM, image, image_size, bands) private(i, k)
 	{
-		#pragma omp for
+		#pragma omp for schedule (static)
 		for(i = 0; i < image_size; i++) {
 			for(k = 0; k < bands; k++) {
 				normM[i] += image[i*bands + k] * image[i*bands + k];
 			}
-			normM1[i] = normM[i]; //if i == 1, normM1 = normM;
 		}
 	}
 	gettimeofday(&t2,NULL);
@@ -100,26 +93,14 @@ int main (int argc, char* argv[]) {
 		}
 
 		//(a-normM)/a
-		for(j = 0; j < image_size; j++) {
-			normMAux[j] = (a - normM[j])/a;
-		}
-
 		//b = find((a-normM)/a <= 1e-6);
-		b_pos_size = 0;
+		max_min_val = -1;
 		for(j = 0; j < image_size; j++) {
-			if (normMAux[j]<= 1.0e-6) {
-				b_pos[b_pos_size] = j;
-				b_pos_size++;
+			faux = (a - normM[j])/a;
+			if (faux <= 1.0e-6 && faux > max_min_val) {
+				J[i] = j;
+				max_min_val = faux;
 			}
-		}
-
-		//if length(b) > 1, [c,d] = max(normM1(b)); b = b(d);
-		if (b_pos_size > 1) {
-			d = maxValExtractArray(normM1, b_pos, b_pos_size);
-			b = b_pos[d];
-			J[i] = b;
-		} else {
-			J[i] = b_pos[0];
 		}
 
 		//U(:,i) = M(:,b);
@@ -176,7 +157,7 @@ int main (int argc, char* argv[]) {
 		omp_set_num_threads(num_threads);
 		#pragma omp parallel shared(normM, v, image, image_size, bands) private(j, k, faux)
 		{
-			#pragma omp for
+			#pragma omp for schedule (static)
 			for(j = 0; j < image_size; j++) {
 				faux = 0;
 				for(k = 0; k < bands; k++) {
@@ -202,7 +183,7 @@ int main (int argc, char* argv[]) {
 
 	printf("Endmembers:\n");
 	for(i = 0; i < endmembers; i++) {
-		printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld) \t- Valor: %f\n", i, J[i],(J[i] / cols),(J[i] % cols), normM1[J[i]]);
+		printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld) \n", i, J[i],(J[i] / cols),(J[i] % cols));
 	}
 
 	printf("Threads used: %d\n", num_threads);
@@ -214,25 +195,9 @@ int main (int argc, char* argv[]) {
 	free(image);
 	free(U);
 	free(normM);
-	free(normM1);
-	free(normMAux);
-	free(b_pos);
 	free(v);
 
 	return 0;
-}
-
-long int maxValExtractArray(float *normM_aux, long int *b_pos, long int b_pos_size) {
-	float max_val = -1;
-	long int pos = -1;
-	long int i;
-	for (i = 0; i < b_pos_size; i++) {
-		if(normM_aux[b_pos[i]] > max_val) {
-			max_val = normM_aux[b_pos[i]];
-			pos = i;
-		}
-	}
-	return pos;
 }
 
 
@@ -256,7 +221,7 @@ void normalizeImg(float *image, long int image_size, int bands, int num_threads)
 	omp_set_num_threads(num_threads);
 	#pragma omp parallel shared(image, image_size, bands) private(i, j, row, norm_val)
 	{
-		#pragma omp for
+		#pragma omp for schedule (static)
 		for (i = 0; i < image_size ; i++) {
 			row = i*bands;
 			norm_val = 0;

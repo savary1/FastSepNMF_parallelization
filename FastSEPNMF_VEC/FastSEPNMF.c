@@ -8,19 +8,18 @@
 #include "ReadWrite.h"
 
 void normalizeImg(float *image, long int image_size, int bands);
-long int maxValExtractArray(float *normM_aux, long int *b_pos, long int b_pos_size);
 float maxVal(float *vector, long int image_size);
 
 int main (int argc, char* argv[]) {
 
 	struct timeval t0, t_fin, t1, t2;
-	float secs_end, t_sec, t_usec, t_norm, t_cost_loop;
+	float secs_end, t_sec, t_usec, t_norm, t_cost_loop, t_seq;
 	int rows, cols, bands; //size of the image
 	int datatype;
 	int endmembers;
 	int normalize;
-	long int i, j, b_pos_size, d, k;
-	float max_val, a, b, faux, faux2;
+	long int i, j, d, k;
+	float max_val, max_min_val, a, b, faux, faux2;
 
 	if (argc != 5) {
 		printf("******************************************************************\n");
@@ -35,7 +34,7 @@ int main (int argc, char* argv[]) {
 		normalize = atoi(argv[4]);
 	}
 
-	secs_end = t_sec = t_usec = t_norm = t_cost_loop = 0;
+	secs_end = t_sec = t_usec = t_norm = t_cost_loop = t_seq = 0;
 
 	/**************************** #INIT# - Load Image and allocate memory******************************/
 	//read image header
@@ -47,9 +46,6 @@ int main (int argc, char* argv[]) {
 	float *image = (float *) calloc (image_size * bands, sizeof(float));    	//input image
 	float *U = (float *) malloc (bands * endmembers * sizeof(float));       	//selected endmembers
 	float *normM = (float *) calloc (image_size, sizeof(float));            	//normalized image
-	float *normM1 = (float *) malloc (image_size * sizeof(float));				//copy of normM
-	float *normMAux = (float *) malloc (image_size * sizeof(float));			//aux array to find the positions that meet (a-normM)/a <= 1e-6
-	long int *b_pos = (long int *) malloc (image_size * sizeof(long int));	   	//valid positions of normM that meet (a-normM)/a <= 1e-6
 	float *v = (float *) malloc (bands * sizeof(float));						//used to update normM in every iteration                                                    	//float auxiliary array
 	long int J[endmembers];                                                 	//selected endmembers positions in input image
 
@@ -68,7 +64,6 @@ int main (int argc, char* argv[]) {
 		for(k = 0; k < bands; k++) {
 			normM[i] += image[i*bands + k] * image[i*bands + k];
 		}
-		normM1[i] = normM[i]; //if i == 1, normM1 = normM;
 	}
 
 	gettimeofday(&t2,NULL);
@@ -83,6 +78,7 @@ int main (int argc, char* argv[]) {
 	i = 0;
 	//while i <= r && max(normM)/nM > 1e-9
 	while(i < endmembers) {
+		gettimeofday(&t1,NULL);
 		//[a,b] = max(normM);
 		a = maxVal(normM, image_size);
 
@@ -91,26 +87,14 @@ int main (int argc, char* argv[]) {
 		}
 
 		//(a-normM)/a
-		for(j = 0; j < image_size; j++) {
-			normMAux[j] = (a - normM[j])/a;
-		}
-
 		//b = find((a-normM)/a <= 1e-6);
-		b_pos_size = 0;
+		max_min_val = -1;
 		for(j = 0; j < image_size; j++) {
-			if (normMAux[j]<= 1.0e-6) {
-				b_pos[b_pos_size] = j;
-				b_pos_size++;
+			faux = (a - normM[j])/a;
+			if (faux <= 1.0e-6 && faux > max_min_val) {
+				J[i] = j;
+				max_min_val = faux;
 			}
-		}
-
-		//if length(b) > 1, [c,d] = max(normM1(b)); b = b(d);
-		if (b_pos_size > 1) {
-			d = maxValExtractArray(normM1, b_pos, b_pos_size);
-			b = b_pos[d];
-			J[i] = b;
-		} else {
-			J[i] = b_pos[0];
 		}
 
 		//U(:,i) = M(:,b);
@@ -153,13 +137,17 @@ int main (int argc, char* argv[]) {
 			for(k = 0; k < bands; k++) {
 				faux += v[k] * U[j*bands + k];
 			}
-			//(v'*U(:,j))*U(:,j);//HACER ACCESOS A MEMORIA ADYACENTES
+			//(v'*U(:,j))*U(:,j);
 			//v = v - (v'*U(:,j))*U(:,j);
 			for(k = 0; k < bands; k ++) {
 				faux2 = U[j*bands + k] * faux;
 				v[k] = v[k] - faux2;
 			}
 		}
+		gettimeofday(&t2,NULL);
+		t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
+		t_usec = (float)  (t2.tv_usec - t1.tv_usec);
+		t_seq = t_seq + t_sec + t_usec/1.0e+6;
 
 		//(v'*M).^2
 		//normM = normM - (v'*M).^2;
@@ -188,36 +176,21 @@ int main (int argc, char* argv[]) {
 
 	printf("Endmembers:\n");
 	for(i = 0; i < endmembers; i++) {
-		printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld) \t- Valor: %f\n", i, J[i],(J[i] / cols),(J[i] % cols), normM1[J[i]]);
+		printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld) \t- Valor: %f\n", i, J[i],(J[i] / cols),(J[i] % cols));
 	}
 
 	printf("Total time:	\t%.5f segundos\n", secs_end);
 	printf("T norm:	\t\t%.5f segundos\n", t_norm);
 	printf("T square loop:	\t%.5f segundos\n", t_cost_loop);
+	printf("T sequential:	\t%.5f segundos\n", t_seq);
 
 
 	free(image);
 	free(U);
 	free(normM);
-	free(normM1);
-	free(normMAux);
-	free(b_pos);
 	free(v);
 
 	return 0;
-}
-
-long int maxValExtractArray(float *normM_aux, long int *b_pos, long int b_pos_size) {
-	float max_val = -1;
-	long int pos = -1;
-	long int i;
-	for (i = 0; i < b_pos_size; i++) {
-		if(normM_aux[b_pos[i]] > max_val) {
-			max_val = normM_aux[b_pos[i]];
-			pos = i;
-		}
-	}
-	return pos;
 }
 
 

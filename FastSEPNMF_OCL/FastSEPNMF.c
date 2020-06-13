@@ -31,15 +31,15 @@ int main (int argc, char* argv[]) {
 	int endmembers;
 	int normalize;
 	long int i, j, b_pos_size, d, k;
-	float max_val, a, b, faux, faux2;
+	float max_val, a, b, faux, faux2, max_red;
 
 	cl_int status;
 	cl_device_id selected_device;
 	cl_context cl_context;
 	cl_command_queue cl_queue;
 	cl_program cl_program;
-	cl_kernel update_normM_kernel, normalize_img_kernel, initialize_normM;
-	cl_mem cl_image, cl_v, cl_normM;
+	cl_kernel update_normM_kernel, normalize_img_kernel, initialize_normM, normM_reduction_kernel, select_endmember_kernel;
+	cl_mem cl_image, cl_v, cl_normM, cl_normM1, cl_red_result, cl_red_result_pos;
 
 	if (argc != 5) {
 		printf("******************************************************************\n");
@@ -71,6 +71,12 @@ int main (int argc, char* argv[]) {
 	update_normM_kernel = clCreateKernel(cl_program, "update_normM", &status);
 	exitIfOpenCLFail(status, "Error creating update_normM kernel");
 
+	normM_reduction_kernel = clCreateKernel(cl_program, "normM_reduction", &status);
+	exitIfOpenCLFail(status, "Error creating normM_reduction kernel");
+
+	select_endmember_kernel = clCreateKernel(cl_program, "select_endmember", &status);
+	exitIfOpenCLFail(status, "Error creating select_endmember kernel");
+
 	/************************************* #END# - OpenCL init****************************************/
 
 
@@ -84,10 +90,9 @@ int main (int argc, char* argv[]) {
 	float *image = (float *) calloc (image_size * bands, sizeof(float));    	//input image
 	float *U = (float *) malloc (bands * endmembers * sizeof(float));       	//selected endmembers
 	float *normM;																//normalized image
-	float *normM1 = (float *) malloc (image_size * sizeof(float));				//copy of normM
-	float *normMAux = (float *) malloc (image_size * sizeof(float));			//aux array to find the positions of (a-normM)/a <= 1e-6
-	long int *b_pos = (long int *) malloc (image_size * sizeof(long int));	   	//valid positions of normM that meet (a-normM)/a <= 1e-6
 	float *v;                                                  					//float auxiliary array
+	float *red_result;
+	int *red_result_pos;
 	long int J[endmembers];                                                 	//selected endmembers positions in input image
 
 
@@ -97,13 +102,21 @@ int main (int argc, char* argv[]) {
 
 	size_t localSize = 1024;
 	size_t globalsize = ceil(image_size/(float)localSize) * localSize;
+	size_t reduction_size = ceil(image_size/2/(float)localSize);
+	size_t global_reduction_size = ceil(image_size/2/(float)localSize) * localSize;
 
 	cl_image = clCreateBuffer(cl_context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, image_size * bands * sizeof(float), image, &status);
 	exitIfOpenCLFail(status, "Error creating cl_image buffer on device");
-	cl_normM = clCreateBuffer(cl_context, CL_MEM_WRITE_ONLY, image_size * sizeof(float), NULL, &status);
+	cl_normM = clCreateBuffer(cl_context, CL_MEM_READ_WRITE, image_size * sizeof(float), NULL, &status);
 	exitIfOpenCLFail(status, "Error creating cl_normM buffer on device");
+	cl_normM1 = clCreateBuffer(cl_context, CL_MEM_READ_WRITE, image_size * sizeof(float), NULL, &status);
+	exitIfOpenCLFail(status, "Error creating cl_normM1 buffer on device");
 	cl_v = clCreateBuffer(cl_context, CL_MEM_READ_ONLY, bands * sizeof(float), NULL, &status);
 	exitIfOpenCLFail(status, "Error creating cl_v buffer on device");
+	cl_red_result = clCreateBuffer(cl_context, CL_MEM_WRITE_ONLY, reduction_size * sizeof(float), NULL, &status);
+	exitIfOpenCLFail(status, "Error creating cl_red_result buffer on device");
+	cl_red_result_pos = clCreateBuffer(cl_context, CL_MEM_WRITE_ONLY, reduction_size * sizeof(int), NULL, &status);
+	exitIfOpenCLFail(status, "Error creating cl_red_result_pos buffer on device");
 
 	status  = clSetKernelArg(update_normM_kernel, 0, sizeof(cl_mem), &cl_image);
 	exitIfOpenCLFail(status, "Error setting image as parameter in the device for update_normM_kernel");
@@ -115,6 +128,25 @@ int main (int argc, char* argv[]) {
 	exitIfOpenCLFail(status, "Error setting bands as parameter in the device for update_normM_kernel");
 	status = clSetKernelArg(update_normM_kernel, 4, sizeof(int), &image_size);
 	exitIfOpenCLFail(status, "Error setting image_size as parameter in the device");
+
+	status = clSetKernelArg(normM_reduction_kernel, 0, sizeof(cl_mem), &cl_normM);
+	exitIfOpenCLFail(status, "Error setting normM as parameter in the device for normM_reduction_kernel");
+	status = clSetKernelArg(normM_reduction_kernel, 1, sizeof(int), &image_size);
+	exitIfOpenCLFail(status, "Error setting image_size as parameter in the device");
+	status = clSetKernelArg(normM_reduction_kernel, 2, sizeof(cl_mem), &cl_red_result);
+	exitIfOpenCLFail(status, "Error setting cl_red_result as parameter in the device for normM_reduction_kernel");
+
+	status = clSetKernelArg(select_endmember_kernel, 0, sizeof(cl_mem), &cl_normM);
+	exitIfOpenCLFail(status, "Error setting normM as parameter in the device for select_endmember_kernel");
+	status = clSetKernelArg(select_endmember_kernel, 1, sizeof(cl_mem), &cl_normM1);
+	exitIfOpenCLFail(status, "Error setting normM1 as parameter in the device for select_endmember_kernel");
+	status = clSetKernelArg(select_endmember_kernel, 2, sizeof(int), &image_size);
+	exitIfOpenCLFail(status, "Error setting image_size as parameter in the device");
+	status = clSetKernelArg(select_endmember_kernel, 4, sizeof(cl_mem), &cl_red_result);
+	exitIfOpenCLFail(status, "Error setting cl_red_result as parameter in the device for select_endmember_kernel");
+	status = clSetKernelArg(select_endmember_kernel, 5, sizeof(cl_mem), &cl_red_result_pos);
+	exitIfOpenCLFail(status, "Error setting cl_red_result_pos as parameter in the device for select_endmember_kernel");
+
 
 	/**************************** #END# - Load Image and allocate memory*******************************/
 
@@ -129,9 +161,11 @@ int main (int argc, char* argv[]) {
 		exitIfOpenCLFail(status, "Error setting image as parameter in the device for normalize_img_kernel");
 		status  = clSetKernelArg(normalize_img_kernel, 1, sizeof(cl_mem), &cl_normM);
 		exitIfOpenCLFail(status, "Error setting normM as parameter in the device for normalize_img_kernel");
-		status  = clSetKernelArg(normalize_img_kernel, 2, sizeof(int), &image_size);
+		status  = clSetKernelArg(normalize_img_kernel, 2, sizeof(cl_mem), &cl_normM1);
+		exitIfOpenCLFail(status, "Error setting normM as parameter in the device for normalize_img_kernel");
+		status  = clSetKernelArg(normalize_img_kernel, 3, sizeof(int), &image_size);
 		exitIfOpenCLFail(status, "Error setting image_size as parameter in the device for normalize_img_kernel");
-		status  = clSetKernelArg(normalize_img_kernel, 3, sizeof(int), &bands);
+		status  = clSetKernelArg(normalize_img_kernel, 4, sizeof(int), &bands);
 		exitIfOpenCLFail(status, "Error setting bands as parameter in the device for normalize_img_kernel");
 
 		status = clEnqueueNDRangeKernel(cl_queue, normalize_img_kernel, 1, NULL, &globalsize, &localSize, 0, NULL, NULL);
@@ -141,6 +175,9 @@ int main (int argc, char* argv[]) {
 		normM = (float *) clEnqueueMapBuffer(cl_queue, cl_normM, CL_TRUE, CL_MAP_READ, 0, image_size * sizeof(float), 0, NULL, NULL, &status);
 		exitIfOpenCLFail(status, "Error mapping normM to the host");
 		clFinish(cl_queue);
+
+		clReleaseKernel(normalize_img_kernel);
+
 	} else {
 		initialize_normM = clCreateKernel(cl_program, "initialize_normM", &status);
 		exitIfOpenCLFail(status, "Error creating initialize_normM kernel");
@@ -149,9 +186,11 @@ int main (int argc, char* argv[]) {
 		exitIfOpenCLFail(status, "Error setting image as parameter in the device for initialize_normM");
 		status  = clSetKernelArg(initialize_normM, 1, sizeof(cl_mem), &cl_normM);
 		exitIfOpenCLFail(status, "Error setting normM as parameter in the device for initialize_normM");
-		status  = clSetKernelArg(initialize_normM, 2, sizeof(int), &image_size);
+		status  = clSetKernelArg(initialize_normM, 2, sizeof(cl_mem), &cl_normM1);
+		exitIfOpenCLFail(status, "Error setting normM as parameter in the device for initialize_normM");
+		status  = clSetKernelArg(initialize_normM, 3, sizeof(int), &image_size);
 		exitIfOpenCLFail(status, "Error setting image_size as parameter in the device for initialize_normM");
-		status  = clSetKernelArg(initialize_normM, 3, sizeof(int), &bands);
+		status  = clSetKernelArg(initialize_normM, 4, sizeof(int), &bands);
 		exitIfOpenCLFail(status, "Error setting bands as parameter in the device for initialize_normM");
 
 		status = clEnqueueNDRangeKernel(cl_queue, initialize_normM, 1, NULL, &globalsize, &localSize, 0, NULL, NULL);
@@ -161,11 +200,10 @@ int main (int argc, char* argv[]) {
 		normM = (float *) clEnqueueMapBuffer(cl_queue, cl_normM, CL_TRUE, CL_MAP_READ, 0, image_size * sizeof(float), 0, NULL, NULL, &status);
 		exitIfOpenCLFail(status, "Error mapping normM to the host");
 		clFinish(cl_queue);
+
+		clReleaseKernel(initialize_normM);
 	}
 
-	for(i = 0; i < image_size; i++) {
-		normM1[i] = normM[i]; //if i == 1, normM1 = normM;
-	}
 	gettimeofday(&t2,NULL);
 	t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
 	t_usec = (float)  (t2.tv_usec - t1.tv_usec);
@@ -182,34 +220,58 @@ int main (int argc, char* argv[]) {
 		exitIfOpenCLFail(status, "Error mapping v to the host");
 
 		//[a,b] = max(normM);
-		a = maxVal(normM, image_size);
+		//a = maxVal(normM, image_size);
+		status = clEnqueueNDRangeKernel(cl_queue, normM_reduction_kernel, 1, NULL, &global_reduction_size, &localSize, 0, NULL, NULL);
+		exitIfOpenCLFail(status, "Error executing normM_reduction_kernel");
+		clFinish(cl_queue);
+
+		red_result = (float *) clEnqueueMapBuffer(cl_queue, cl_red_result, CL_TRUE, CL_MAP_READ, 0, reduction_size * sizeof(float), 0, NULL, NULL, &status);
+		exitIfOpenCLFail(status, "Error mapping cl_red_result to the host");
+
+		max_red = -1;
+		for (j = 0; j < reduction_size; j++){
+			if(red_result[j] > max_red)
+				max_red = red_result[j];
+		}
+
+		status = clEnqueueUnmapMemObject(cl_queue, cl_red_result, red_result, 0, NULL, NULL);
+		exitIfOpenCLFail(status, "Error unmapping red_result from the host");
+
+		a = max_red;
+		
 
 		if(a/max_val <= 1e-9) {
 			break;
 		}
 
 		//(a-normM)/a
-		for(j = 0; j < image_size; j++) {
-			normMAux[j] = (a - normM[j])/a;
-		}
-
 		//b = find((a-normM)/a <= 1e-6);
-		b_pos_size = 0;
-		for(j = 0; j < image_size; j++) {
-			if (normMAux[j]<= 1.0e-6) {
-				b_pos[b_pos_size] = j;
-				b_pos_size++;
+		//if length(b) > 1, [c,d] = max(normM1(b)); b = b(d);
+		status = clSetKernelArg(select_endmember_kernel, 2, sizeof(float), &max_red);
+		exitIfOpenCLFail(status, "Error setting max_red as parameter in the device");
+
+		status = clEnqueueNDRangeKernel(cl_queue, select_endmember_kernel, 1, NULL, &global_reduction_size, &localSize, 0, NULL, NULL);
+		exitIfOpenCLFail(status, "Error executing select_endmember_kernel");
+		clFinish(cl_queue);
+
+		red_result = (float *) clEnqueueMapBuffer(cl_queue, cl_red_result, CL_TRUE, CL_MAP_READ, 0, reduction_size * sizeof(float), 0, NULL, NULL, &status);
+		exitIfOpenCLFail(status, "Error mapping cl_red_result to the host");
+		red_result_pos = (int *) clEnqueueMapBuffer(cl_queue, cl_red_result_pos, CL_TRUE, CL_MAP_READ, 0, reduction_size * sizeof(int), 0, NULL, NULL, &status);
+		exitIfOpenCLFail(status, "Error mapping cl_red_result_pos to the host");
+
+		max_red = -1;
+		for (j = 0; j < reduction_size; j++){
+			if(red_result[j] =! -1 && red_result[j] > max_red){
+				J[i] = red_result_pos[j];
+				max_red = red_result[j];
 			}
 		}
 
-		//if length(b) > 1, [c,d] = max(normM1(b)); b = b(d);
-		if (b_pos_size > 1) {
-			d = maxValExtractArray(normM1, b_pos, b_pos_size);
-			b = b_pos[d];
-			J[i] = b;
-		} else {
-			J[i] = b_pos[0];
-		}
+		status = clEnqueueUnmapMemObject(cl_queue, cl_red_result, red_result, 0, NULL, NULL);
+		exitIfOpenCLFail(status, "Error unmapping red_result from the host");
+		status = clEnqueueUnmapMemObject(cl_queue, cl_red_result_pos, red_result_pos, 0, NULL, NULL);
+		exitIfOpenCLFail(status, "Error unmapping red_result_pos from the host");
+
 
 		//U(:,i) = M(:,b);
 		for(j = 0 ; j < bands; j++) {
@@ -224,7 +286,7 @@ int main (int argc, char* argv[]) {
 				faux += U[j*bands + k] * U[i*bands + k];
 			}
 
-#pragma ivdep
+			#pragma ivdep
 			for(k = 0; k < bands; k ++) {
 				faux2 = U[j*bands + k] * faux;
 				U[i*bands + k] = U[i*bands + k] - faux2;
@@ -264,16 +326,11 @@ int main (int argc, char* argv[]) {
 		gettimeofday(&t1,NULL);
 		status = clEnqueueUnmapMemObject(cl_queue, cl_v, v, 0, NULL, NULL);
 		exitIfOpenCLFail(status, "Error unmapping v from the host");
-		status = clEnqueueUnmapMemObject(cl_queue, cl_normM, normM, 0, NULL, NULL);
-		exitIfOpenCLFail(status, "Error unmapping normM from the host");
 
 		printf("Ejecutando kernel - %d\n", i);
 		status = clEnqueueNDRangeKernel(cl_queue, update_normM_kernel, 1, NULL, &globalsize, &localSize, 0, NULL, NULL);
 		exitIfOpenCLFail(status, "Error executing update_normM_kernel");
 		clFinish(cl_queue);
-
-		normM = (float *) clEnqueueMapBuffer(cl_queue, cl_normM, CL_TRUE, CL_MAP_READ, 0, image_size * sizeof(float), 0, NULL, NULL, &status);
-		exitIfOpenCLFail(status, "Error mapping normM to the host");
 
 		gettimeofday(&t2,NULL);
 		t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
@@ -292,7 +349,7 @@ int main (int argc, char* argv[]) {
 
 	printf("Endmembers:\n");
 	for(j = 0; j < i; j++) {
-		printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld) \t- Valor: %f\n", j, J[j],(J[j] / cols),(J[j] % cols), normM1[J[j]]);
+		printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld) \n", j, J[j],(J[j] / cols),(J[j] % cols));
 	}
 
 	printf("Total time:	\t%.5f segundos\n", secs_fin);
@@ -301,8 +358,13 @@ int main (int argc, char* argv[]) {
 
 	clReleaseMemObject(cl_image);
 	clReleaseMemObject(cl_normM);
+	clReleaseMemObject(cl_normM1);
 	clReleaseMemObject(cl_v);
+	clReleaseMemObject(cl_red_result);
+	clReleaseMemObject(cl_red_result_pos);
 	clReleaseKernel(update_normM_kernel);
+	clReleaseKernel(normM_reduction_kernel);
+	clReleaseKernel(select_endmember_kernel);
 	clReleaseProgram(cl_program);
 	clReleaseCommandQueue(cl_queue);
 	clReleaseContext(cl_context);
@@ -310,9 +372,6 @@ int main (int argc, char* argv[]) {
 
 	free(image);
 	free(U);
-	free(normM1);
-	free(normMAux);
-	free(b_pos);
 
 	return 0;
 }

@@ -49,6 +49,7 @@ int main (int argc, char* argv[]) {
 	float *image = (float *) calloc (image_size * bands, sizeof(float));    	//input image
 	float *U = (float *) malloc (bands * endmembers * sizeof(float));       	//selected endmembers
 	float *normM = (float *) calloc (image_size, sizeof(float));            	//normalized image
+	float *normM1 = (float *) malloc (image_size * sizeof(float));            	//copy of normalized image
 	float *v = (float *) malloc (bands * sizeof(float));						//used to update normM in every iteration                                                    	//float auxiliary array
 	long int J[endmembers];                                                 	//selected endmembers positions in input image
 
@@ -64,13 +65,14 @@ int main (int argc, char* argv[]) {
 	}
 
 	omp_set_num_threads(num_threads);
-	#pragma omp parallel shared(normM, image, image_size, bands) private(i, k)
+	#pragma omp parallel shared(normM, normM1, image, image_size, bands) private(i, k)
 	{
 		#pragma omp for schedule (static)
 		for(i = 0; i < image_size; i++) {
 			for(k = 0; k < bands; k++) {
 				normM[i] += image[i*bands + k] * image[i*bands + k];
 			}
+			normM1[i] = normM[i];
 		}
 	}
 	gettimeofday(&t2,NULL);
@@ -97,9 +99,9 @@ int main (int argc, char* argv[]) {
 		max_min_val = -1;
 		for(j = 0; j < image_size; j++) {
 			faux = (a - normM[j])/a;
-			if (faux <= 1.0e-6 && faux > max_min_val) {
+			if (faux <= 1.0e-6 && normM1[j] > max_min_val) {
 				J[i] = j;
-				max_min_val = faux;
+				max_min_val = normM1[j];
 			}
 		}
 

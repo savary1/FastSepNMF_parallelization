@@ -68,7 +68,7 @@ __kernel void select_endmember(__global float* restrict cl_normM, __global float
     for(int i = l_size; i > 0; i >>= 1) {
         if(l_id < i) {
             if(l_red[l_id + i] <= 1.0e-6){
-                if(l_red[l_id] > 1.0e-6 || (l_red[l_id] <= 1.0e-6 && cl_normM1[l_id + i] > cl_normM1[l_id])) {
+                if(l_red[l_id] > 1.0e-6 || (l_red[l_id] <= 1.0e-6 && l_normM1[l_id + i] > l_normM1[l_id])) {
                     l_red[l_id] = l_red[l_id + i];
                     l_red_pos[l_id] = l_red_pos[l_id + i];
                 }
@@ -77,12 +77,14 @@ __kernel void select_endmember(__global float* restrict cl_normM, __global float
         barrier(CLK_LOCAL_MEM_FENCE);
     }
 
-    if(l_id == 0 && l_red[0] < 1.0e-6) {
-        cl_red_result[get_group_id(0)] = l_normM1[l_id];
-        cl_red_result_pos[get_group_id(0)] = l_red_pos[0];
-    }
-    else{
-        cl_red_result[get_group_id(0)] = -1;
+    if(l_id == 0){
+        if(l_red[0] <= 1.0e-6) {
+            cl_red_result[get_group_id(0)] = l_normM1[l_id];
+            cl_red_result_pos[get_group_id(0)] = l_red_pos[0];
+        }
+        else{
+            cl_red_result[get_group_id(0)] = -1;
+        }
     }
 }
 

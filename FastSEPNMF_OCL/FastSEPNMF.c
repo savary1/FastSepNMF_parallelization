@@ -14,8 +14,6 @@
 
 
 
-long int maxValExtractArray(float *normM_aux, long int *b_pos, long int b_pos_size);
-float maxVal(float *vector, long int image_size);
 void exitIfOpenCLFail(cl_int code, char* msg);
 cl_device_id selectDevice();
 cl_program buildKernels(cl_context cl_context, cl_device_id selected_device);
@@ -210,7 +208,23 @@ int main (int argc, char* argv[]) {
 	t_norm = t_sec + t_usec/1.0e+6;
 
 	/**************************** #END# - Normalize image****************************************/
-	max_val = maxVal(normM, image_size);
+	status = clEnqueueNDRangeKernel(cl_queue, normM_reduction_kernel, 1, NULL, &global_reduction_size, &localSize, 0, NULL, NULL);
+	exitIfOpenCLFail(status, "Error executing normM_reduction_kernel");
+	clFinish(cl_queue);
+
+	red_result = (float *) clEnqueueMapBuffer(cl_queue, cl_red_result, CL_TRUE, CL_MAP_READ, 0, reduction_size * sizeof(float), 0, NULL, NULL, &status);
+	exitIfOpenCLFail(status, "Error mapping cl_red_result to the host");
+
+	max_red = -1;
+	for (j = 0; j < reduction_size; j++){
+		if(red_result[j] > max_red)
+			max_red = red_result[j];
+	}
+
+	status = clEnqueueUnmapMemObject(cl_queue, cl_red_result, red_result, 0, NULL, NULL);
+	exitIfOpenCLFail(status, "Error unmapping red_result from the host");
+
+	max_val = max_red;
 	/**************************** #INIT# - FastSEPNMF algorithm****************************************/
 
 	i = 0;
@@ -247,7 +261,7 @@ int main (int argc, char* argv[]) {
 		//(a-normM)/a
 		//b = find((a-normM)/a <= 1e-6);
 		//if length(b) > 1, [c,d] = max(normM1(b)); b = b(d);
-		status = clSetKernelArg(select_endmember_kernel, 2, sizeof(float), &max_red);
+		status = clSetKernelArg(select_endmember_kernel, 3, sizeof(float), &max_red);
 		exitIfOpenCLFail(status, "Error setting max_red as parameter in the device");
 
 		status = clEnqueueNDRangeKernel(cl_queue, select_endmember_kernel, 1, NULL, &global_reduction_size, &localSize, 0, NULL, NULL);
@@ -261,7 +275,7 @@ int main (int argc, char* argv[]) {
 
 		max_red = -1;
 		for (j = 0; j < reduction_size; j++){
-			if(red_result[j] =! -1 && red_result[j] > max_red){
+			if(red_result[j] > max_red){
 				J[i] = red_result_pos[j];
 				max_red = red_result[j];
 			}
@@ -271,7 +285,6 @@ int main (int argc, char* argv[]) {
 		exitIfOpenCLFail(status, "Error unmapping red_result from the host");
 		status = clEnqueueUnmapMemObject(cl_queue, cl_red_result_pos, red_result_pos, 0, NULL, NULL);
 		exitIfOpenCLFail(status, "Error unmapping red_result_pos from the host");
-
 
 		//U(:,i) = M(:,b);
 		for(j = 0 ; j < bands; j++) {
@@ -374,36 +387,6 @@ int main (int argc, char* argv[]) {
 	free(U);
 
 	return 0;
-}
-
-
-
-long int maxValExtractArray(float *normM_aux, long int *b_pos, long int b_pos_size) {
-	float max_val = -1;
-	long int pos = -1;
-	long int i;
-	for (i = 0; i < b_pos_size; i++) { //DICE QUE NO SE PUEDE VECTORIZAR PORQUE MAXVAL DEPENDE DEL MAXVAL DE LA ITERACIÓN ANTERIOR
-		if(normM_aux[b_pos[i]] > max_val) {
-			max_val = normM_aux[b_pos[i]];
-			pos = i;
-		}
-	}
-	return pos;
-}
-
-
-
-float maxVal(float *vector, long int image_size) {
-	float max_val = -1;
-	long int i;
-
-	for (i = 0; i < image_size; i++) {
-		if(vector[i] > max_val) {
-			max_val = vector[i];
-		}
-	}
-
-	return max_val;
 }
 
 

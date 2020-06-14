@@ -65,14 +65,16 @@ int main (int argc, char* argv[]) {
 	}
 
 	omp_set_num_threads(num_threads);
-	#pragma omp parallel shared(normM, normM1, image, image_size, bands) private(i, k)
+	#pragma omp parallel shared(normM, normM1, image, image_size, bands) private(i, k, faux)
 	{
 		#pragma omp for schedule (static)
 		for(i = 0; i < image_size; i++) {
+			faux = 0;
 			for(k = 0; k < bands; k++) {
-				normM[i] += image[i*bands + k] * image[i*bands + k];
+				faux += image[i*bands + k] * image[i*bands + k];
 			}
-			normM1[i] = normM[i];
+			normM[i] = faux;
+			normM1[i] = faux;
 		}
 	}
 	gettimeofday(&t2,NULL);

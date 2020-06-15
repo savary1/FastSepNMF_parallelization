@@ -8,14 +8,13 @@
 #include <omp.h>
 #include "ReadWrite.h"
 
-void normalizeImg(float *image, long int image_size, int bands, int num_threads);
 float maxVal(float *vector, long int image_size);
 
 int main (int argc, char* argv[]) {
 
 	struct timeval t0, t_fin, t1, t2;
 	float secs_end, t_sec, t_usec, t_norm, t_cost_loop;
-	int rows, cols, bands; //size of the image
+	int rows, cols, bands, row; //size of the image
 	int datatype;
 	int endmembers;
 	int normalize;
@@ -61,20 +60,41 @@ int main (int argc, char* argv[]) {
 	/**************************** #INIT# - Normalize image****************************************/
 	gettimeofday(&t1,NULL);
 	if (normalize == 1) {
-		normalizeImg(image, image_size, bands, num_threads);
-	}
-
-	omp_set_num_threads(num_threads);
-	#pragma omp parallel shared(normM, normM1, image, image_size, bands) private(i, k, faux)
-	{
-		#pragma omp for schedule (static)
-		for(i = 0; i < image_size; i++) {
-			faux = 0;
-			for(k = 0; k < bands; k++) {
-				faux += image[i*bands + k] * image[i*bands + k];
+		omp_set_num_threads(num_threads);
+		#pragma omp parallel shared(image, normM, normM1, image_size, bands) private(i, j, row, faux)
+		{
+			#pragma omp for schedule (static)
+			for (i = 0; i < image_size ; i++) {
+				row = i*bands;
+				faux = 0;
+				for(j = 0; j < bands; j++) {
+					faux += image[row + j];
+				}
+				faux = 1.0/(faux + 1.0e-16);
+				for(j = 0; j < bands; j++) {
+					image[row + j] = image[row + j] * faux;
+				}
+				faux = 0;
+				for(j = 0; j < bands; j++) {
+					faux += image[i*bands + j] * image[i*bands + j];
+				}
+				normM[i] = faux;
+				normM1[i] = faux;
 			}
-			normM[i] = faux;
-			normM1[i] = faux;
+		}
+	}else{
+		omp_set_num_threads(num_threads);
+		#pragma omp parallel shared(normM, normM1, image, image_size, bands) private(i, k, faux)
+		{
+			#pragma omp for schedule (static)
+			for(i = 0; i < image_size; i++) {
+				faux = 0;
+				for(k = 0; k < bands; k++) {
+					faux += image[i*bands + k] * image[i*bands + k];
+				}
+				normM[i] = faux;
+				normM1[i] = faux;
+			}
 		}
 	}
 	gettimeofday(&t2,NULL);
@@ -216,26 +236,4 @@ float maxVal(float *vector, long int image_size) {
 	}
 
 	return max_val;
-}
-
-
-void normalizeImg(float *image, long int image_size, int bands, int num_threads) {
-	long int i, j, row;
-	float norm_val;
-	omp_set_num_threads(num_threads);
-	#pragma omp parallel shared(image, image_size, bands) private(i, j, row, norm_val)
-	{
-		#pragma omp for schedule (static)
-		for (i = 0; i < image_size ; i++) {
-			row = i*bands;
-			norm_val = 0;
-			for(j = 0; j < bands; j++) {
-				norm_val += image[row + j];
-			}
-			norm_val = 1.0/(norm_val + 1.0e-16);
-			for(j = 0; j < bands; j++) {
-				image[row + j] = image[row + j] * norm_val;
-			}
-		}
-	}
 }

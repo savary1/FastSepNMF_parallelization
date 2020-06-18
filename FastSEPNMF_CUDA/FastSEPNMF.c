@@ -50,8 +50,6 @@ int main (int argc, char* argv[]){
     long int image_size = cols*rows;
     float *image;   															//input image 		
     float *U = (float *) malloc (bands * endmembers * sizeof(float));       	//selected endmembers
-    float *normM;            													//normalized image
-	float *normM1 = (float *) malloc (image_size * sizeof(float));			    //copy of normM
 	float *normM_aux = (float *) malloc (image_size * sizeof(float));			//aux array to find the positions of (a-normM)/a <= 1e-6
 	long int *b_pos = (long int *) malloc (image_size * sizeof(long int));	   	//valid positions of normM that meet (a-normM)/a <= 1e-6                                                                                                                                                            
 	float *v;																	//used to update normM in every iteration                                                                                                                                                                    
@@ -69,7 +67,7 @@ int main (int argc, char* argv[]){
 
 	
 	selectDevice();	
-	reservarMemoria(bands, image_size, &v_c, &image_c, &normM_c, &normM1_c, &image, &normM, &v, &d_projections, &d_index, &h_projections, &h_index, globalSize_reduction);
+	reservarMemoria(bands, image_size, &v_c, &image_c, &normM_c, &normM1_c, &image, &v, &d_projections, &d_index, &h_projections, &h_index, globalSize_reduction);
 		
 	LoadImageImagenes(argv[1], image, cols, rows, bands, datatype);
 	
@@ -80,15 +78,12 @@ int main (int argc, char* argv[]){
     /**************************** #INIT# - Normalize image****************************************/
 	gettimeofday(&t1,NULL);
     if (normalize == 1){
-		normalizeImgC(image, image_size, bands, image_c, rows, normM_c, normM, normM1, normM1_c);
+		normalizeImgC(image, image_size, bands, image_c, rows, normM_c, normM1_c);
     }
 	else{
-		calculateNormM(image, normM, normM1, image_size, bands, rows, image_c, normM_c, normM1_c);
+		calculateNormM(image, image_size, bands, rows, image_c, normM_c, normM1_c);
 	}
 	
-	for(i = 0; i < image_size; i++){
-		normM1[i] = normM[i];
-    }
 
 	gettimeofday(&t2,NULL);
 	t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
@@ -96,7 +91,15 @@ int main (int argc, char* argv[]){
 	t_norm = t_sec + t_usec/1.0e+6;
 	
 	/**************************** #END# - Normalize image****************************************/
-	max_val = maxVal(normM, image_size);
+	
+	calculateMaxVal(image_size, normM_c, d_projections, h_projections);
+	
+	max_val = -1;
+	for (j = 0; j < globalSize_reduction; j++){
+		if(h_projections[j] > max_val){
+			max_val = h_projections[j];
+		}
+	}
     /**************************** #INIT# - FastSEPNMF algorithm****************************************/ 
 	
 	i = 0;
@@ -163,8 +166,8 @@ int main (int argc, char* argv[]){
 		}
 		
 		gettimeofday(&t1,NULL);
-			
-		actualizarNormM(v, bands, normM, image_size, i, rows, v_c, image_c, normM_c, &t_act);
+		
+		actualizarNormM(v, bands, image_size, i, rows, v_c, image_c, normM_c);
 
 		gettimeofday(&t2,NULL);
 		t_sec  = (float)  (t2.tv_sec - t1.tv_sec);
@@ -181,7 +184,7 @@ int main (int argc, char* argv[]){
 
 	printf("Endmembers:\n");
     for(i = 0; i < endmembers; i++){
-		printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld) \t- Valor: %f\n", i, J[i],(J[i] / cols),(J[i] % cols), normM1[J[i]]);
+		printf("%ld \t- %ld \t- Coordenadas: (%ld,%ld)\n", i, J[i],(J[i] / cols),(J[i] % cols));
     }
 
 	printf("Total time:	\t%.5f segundos\n", secs_fin);
@@ -190,11 +193,10 @@ int main (int argc, char* argv[]){
 	 
     
     free(U);
-	free(normM1);
 	free(normM_aux);
 	free(b_pos);
 
-	liberarMemoria(v_c, image_c, normM_c, image, normM, normM1_c, v, d_projections, d_index, h_projections, h_index);
+	liberarMemoria(v_c, image_c, normM_c, image, normM1_c, v, d_projections, d_index, h_projections, h_index);
 
     return 0;
 }

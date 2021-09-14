@@ -1,0 +1,4 @@
+# FastSepNMF_parallelization
+Study of different parallel versions of the FastSepNMF algorithm
+
+In this project, multiple parallel versions of the [FastSepNMF algorithm](https://arxiv.org/abs/1208.1237) were developed and evaluated for endmember extraction in hyperspectral imaging. The original version was written in [MATLAB](https://www.dropbox.com/s/03u7gncwx06nk8r/FastSepNMF.m?dl=0) by Nicolas Guillis. That original version was first translated literally to C (FastSEPNMF_C folder) and then optimized to improve efficiency and exploit vectorization instructions (FastSEPNMF_VEC folder). Then, parallel versions were developed using FastSEPNMF_VEC as a base using OpenMP (FastSEPNMF_OMP folder), OpenGL (FastSEPNMF_OCL) and CUDA (FastSEPNMF_CUDA). The performance evaluation of all the developed versions using GPUs and multiple CPUs can be found [here](https://eprints.ucm.es/id/eprint/62867/).
